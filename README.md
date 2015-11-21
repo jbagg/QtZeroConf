@@ -1,7 +1,7 @@
 
-QZeroConf is a Qt wrapper class for ZeroConf libraries across various platforms.  The Client is used in combination with 
+QZeroConf is a Qt wrapper class for ZeroConf libraries across various platforms.
 
-* Windows (requires iTunes or [Apple Print Services](https://support.apple.com/kb/DL999)
+* Windows (requires iTunes or [Apple Print Services](https://support.apple.com/kb/DL999))
 * Mac
 * Linux
 * Android
@@ -72,14 +72,14 @@ It is recommend, but not required, that you connect a slot to QZeroConf's error(
 
 3. Connect a slot to QZeroConf's serviceAdded() signal.  When serviceAdded() is emitted, it passes a pointer to the QZeroConfService recently discovered.
 
-4. Optionally connect a slot to QZeroConf's serviceRemoved() signal to received status when the service is unpublished.   ServiceRemoved() passes a pointer to the service being removed.  Do not make delayed connections with this signal.
+4. Optionally connect a slot to QZeroConf's serviceRemoved() signal to received status when the service is unpublished.   ServiceRemoved() passes a pointer to the service being removed.  **Do not make delayed connections with ServiceRemoved() signal.**
 
 5. Call startBrowser() with the type of the service to browse for and optionally the protocol to use.
 
 ```c++
 startBrowser("_test._tcp");
 ```
-If you are browsing for services published using both ipv4 and ipv6 ( QabstractSocket::AnyIPProtocol) you should also connect a slot to QzeroConf's serviceUpdated() signal.  When the IP address of the first protocol is resolved,  serviceAdded() is emitted, when the IP address of the second protocol is resolved,  serviceUpdated() is emitted.
+If you are browsing for services published using both ipv4 and ipv6 ( QAbstractSocket::AnyIPProtocol) you should also connect a slot to QzeroConf's serviceUpdated() signal.  When the IP address of the first protocol is resolved,  serviceAdded() is emitted, when the IP address of the second protocol is resolved,  serviceUpdated() is emitted.
 
 Only one browser can be in use per instance of QzeroConf.
 
