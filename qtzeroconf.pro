@@ -9,6 +9,6 @@ TARGET = $$qtLibraryTarget(QtZeroConf$$QT_LIBINFIX)
 CONFIG += module create_prl
 mac:QMAKE_FRAMEWORK_BUNDLE_NAME = $$TARGET
 
-target.path = /usr/lib
+target.path = $$PREFIX/lib
 
 INSTALLS += target
