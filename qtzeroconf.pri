@@ -44,6 +44,12 @@ macx {
 	QMAKE_CXXFLAGS+= -I$$PWD
 }
 
+ios {
+	HEADERS+= $$PWD/qzeroconf.h $$PWD/bonjour_p.h
+	SOURCES+= $$PWD/bonjour.cpp
+	QMAKE_CXXFLAGS+= -I$$PWD
+}
+
 android {
 	QMAKE_CXXFLAGS+= -I$$PWD
 	QMAKE_CFLAGS+= -I$$PWD
