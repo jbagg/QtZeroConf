@@ -31,6 +31,8 @@
 #include <QHostAddress>
 #include <QMap>
 
+#undef interface
+
 struct QZeroConfService
 {
 	QString			name;
