@@ -69,7 +69,7 @@ void QZeroConfPrivate::resolve(void)
 {
 	DNSServiceErrorType err;
 
-	err = DNSServiceResolve(&resolver, kDNSServiceFlagsTimeout, newService->interface, newService->name.toUtf8(), newService->type.toUtf8(), newService->domain.toUtf8(), (DNSServiceResolveReply) resolverCallback, this);
+	err = DNSServiceResolve(&resolver, kDNSServiceFlagsTimeout, newService->interfaceIndex, newService->name.toUtf8(), newService->type.toUtf8(), newService->domain.toUtf8(), (DNSServiceResolveReply) resolverCallback, this);
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(resolver);
 		if (sockfd == -1) {
@@ -115,7 +115,7 @@ void DNSSD_API QZeroConfPrivate::browseCallback(DNSServiceRef, DNSServiceFlags f
 				zcs->name = name;
 				zcs->type = type;
 				zcs->domain = domain;
-				zcs->interface = interfaceIndex;
+				zcs->interfaceIndex = interfaceIndex;
 				if (!ref->newService) {
 					ref->newService = zcs;
 					ref->resolve();

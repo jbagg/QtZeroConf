@@ -158,7 +158,7 @@ public:
 				zcs->type = type;
 				zcs->domain = domain;
 				zcs->host = host_name;
-				zcs->interface = interface;
+				zcs->interfaceIndex = interface;
 				zcs->port = port;
 				ref->pub->services.insert(key, zcs);
 			}

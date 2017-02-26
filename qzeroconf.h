@@ -39,7 +39,7 @@ struct QZeroConfService
 	QString			host;
 	QHostAddress	ip;
 	QHostAddress	ipv6;
-	quint32			interface;
+	quint32			interfaceIndex;
 	quint16			port;
 };
 
