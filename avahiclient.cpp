@@ -29,6 +29,7 @@
 #include <avahi-client/client.h>
 #include <avahi-client/publish.h>
 #include <avahi-common/error.h>
+#include <avahi-common/malloc.h>
 #include <avahi-client/lookup.h>
 #include "qzeroconf.h"
 
@@ -130,7 +131,7 @@ public:
 
 	static void resolveCallback(
 	    AvahiServiceResolver *r,
-	    AVAHI_GCC_UNUSED AvahiIfIndex interface,
+      AvahiIfIndex interface,
 	    AVAHI_GCC_UNUSED AvahiProtocol protocol,
 	    AvahiResolverEvent event,
 	    const char *name,
@@ -139,9 +140,9 @@ public:
 	    const char *host_name,
 	    const AvahiAddress *address,
 	    uint16_t port,
-	    AvahiStringList *,
+      AvahiStringList *txt,
 	    AvahiLookupResultFlags,
-	    AVAHI_GCC_UNUSED void* userdata)
+      void* userdata)
 	{
 		bool newRecord = 0;
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
@@ -158,9 +159,12 @@ public:
 				zcs->type = type;
 				zcs->domain = domain;
 				zcs->host = host_name;
-				zcs->interfaceIndex = interface;
-				zcs->port = port;
-				ref->pub->services.insert(key, zcs);
+				zcs->interface = interface;
+        zcs->port = port;
+        char *t = avahi_string_list_to_string(txt);
+        zcs->txt = QByteArray(t);
+        avahi_free(t);
+        ref->pub->services.insert(key, zcs);
 			}
 
 			char a[AVAHI_ADDRESS_STR_MAX];
