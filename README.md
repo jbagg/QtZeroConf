@@ -32,19 +32,19 @@ QZeroConf can be built directly into your project if your project is [LGPL3](htt
 
 (See the example included with the source)
 
-1. Include header
+    1. Include header
 
 ```c++
 #include "qzeroconf.h"
 ```
-2. Create an instance of QZeroConf
+    2. Create an instance of QZeroConf
 
 ```c++
 QZeroConf zeroConf;
 ```
 It is recommend, but not required, that you connect a slot to QZeroConf's error() signal and servicePublished() signal.
 
-3. Call startServicePublish() with the name, type, domain and port of your service.
+    3. Call startServicePublish() with the name, type, domain and port of your service.
 
 ```c++
 zeroConf.startServicePublish("Test", "_test._tcp", "local", 12345);
@@ -58,23 +58,23 @@ Only one service can be published per instance of QZeroConf.
 
 (See the example included with the source)
 
-1. Include header
+    1. Include header
 
 ```c++
 #include "qzeroconf.h"
 ```
-2. Create an instance of QZeroConf
+    2. Create an instance of QZeroConf
 
 ```c++
 QZeroConf zeroConf;
 ```
 It is recommend, but not required, that you connect a slot to QZeroConf's error() signal.
 
-3. Connect a slot to QZeroConf's serviceAdded() signal.  When serviceAdded() is emitted, it passes a pointer to the QZeroConfService recently discovered.
+    3. Connect a slot to QZeroConf's serviceAdded() signal.  When serviceAdded() is emitted, it passes a pointer to the QZeroConfService recently discovered.
 
-4. Optionally connect a slot to QZeroConf's serviceRemoved() signal to received status when the service is unpublished.   ServiceRemoved() passes a pointer to the service being removed.  **Do not make delayed connections with ServiceRemoved() signal.**
+    4. Optionally connect a slot to QZeroConf's serviceRemoved() signal to received status when the service is unpublished.   ServiceRemoved() passes a pointer to the service being removed.  **Do not make delayed connections with ServiceRemoved() signal.**
 
-5. Call startBrowser() with the type of the service to browse for and optionally the protocol to use.
+    5. Call startBrowser() with the type of the service to browse for and optionally the protocol to use.
 
 ```c++
 startBrowser("_test._tcp");
