@@ -16,10 +16,10 @@ linux:!android {
 }
 
 freebsd {
-    HEADERS+= $$PWD/qzeroconf.h $$PWD/avahi-qt/qt-watch.h  $$PWD/avahi-qt/qt-watch_p.h
-    SOURCES+= $$PWD/avahiclient.cpp $$PWD/avahi-qt/qt-watch.cpp
-    LIBS+= -lavahi-client -lavahi-common
-    QMAKE_CXXFLAGS+= -I$$PWD
+	HEADERS+= $$PWD/qzeroconf.h $$PWD/avahi-qt/qt-watch.h  $$PWD/avahi-qt/qt-watch_p.h
+	SOURCES+= $$PWD/avahiclient.cpp $$PWD/avahi-qt/qt-watch.cpp
+	LIBS+= -lavahi-client -lavahi-common
+	QMAKE_CXXFLAGS+= -I$$PWD
 }
 
 win32 {
