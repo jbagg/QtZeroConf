@@ -44,7 +44,17 @@ QZeroConf zeroConf;
 ```
 It is recommend, but not required, that you connect a slot to QZeroConf's error() signal and servicePublished() signal.
 
-3) Call startServicePublish() with the name, type, domain and port of your service.
+3) If you want to add one or more txt records to the service, call
+```c++
+zeroConf.addServiceTxtRecord("name", "value");
+```
+or
+```c++
+zeroConf.addServiceTxtRecord("nameOnly");
+```
+before calling startServicePublish()
+
+4) Call startServicePublish() with the name, type, domain and port of your service.
 
 ```c++
 zeroConf.startServicePublish("Test", "_test._tcp", "local", 12345);
