@@ -66,6 +66,7 @@ public:
 	QSocketNotifier *bs, *browserSocket, *resolverSocket, *addressSocket;
 	QZeroConfService *newService;
 	QList<QZeroConfService *> work;
+	QByteArray txt;
 
 public slots:
 	void bsRead();

@@ -39,6 +39,7 @@ public:
 	{
 		qint32 error;
 
+		txt = NULL;
 		pub = parent;
 		group = NULL;
 		browser = NULL;
@@ -72,7 +73,7 @@ public:
 				emit ref->pub->error(QZeroConf::serviceRegistrationFailed);
 				break;
 			case AVAHI_ENTRY_GROUP_UNCOMMITED:
-				ret = avahi_entry_group_add_service(g, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), NULL, ref->port, NULL);
+				ret = avahi_entry_group_add_service_strlst(g, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), NULL, ref->port, ref->txt);
 				if (ret < 0) {
 					avahi_entry_group_free(g);
 					ref->group = NULL;
@@ -197,10 +198,10 @@ public:
 	const AvahiPoll *poll;
 	AvahiClient *client;
 	AvahiEntryGroup *group;
+	AvahiServiceBrowser *browser;
+	AvahiStringList *txt;
 	QString name, type, domain;
 	quint16 port;
-
-	AvahiServiceBrowser *browser;
 };
 
 
@@ -211,6 +212,7 @@ QZeroConf::QZeroConf()
 
 QZeroConf::~QZeroConf()
 {
+	avahi_string_list_free(pri->txt);
 	pri->broswerCleanUp();
 	if (pri->client)
 		avahi_client_free(pri->client);
@@ -240,6 +242,26 @@ void QZeroConf::stopServicePublish(void)
 		avahi_entry_group_free(pri->group);
 		pri->group = NULL;
 	}
+}
+
+// http://www.zeroconf.org/rendezvous/txtrecords.html
+
+void QZeroConf::addServiceTxtRecord(QString nameOnly)
+{
+	pri->txt = avahi_string_list_add(pri->txt, nameOnly.toUtf8());
+}
+
+void QZeroConf::addServiceTxtRecord(QString name, QString value)
+{
+	name.append("=");
+	name.append(value);
+	addServiceTxtRecord(name);
+}
+
+void QZeroConf::clearServiceTxtRecords()
+{
+	avahi_string_list_free(pri->txt);
+	pri->txt = NULL;
 }
 
 void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol)

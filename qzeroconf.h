@@ -79,6 +79,9 @@ public:
 	}
 	void startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol);
 	void stopBrowser(void);
+	void addServiceTxtRecord(QString nameOnly);
+	void addServiceTxtRecord(QString name, QString value);
+	void clearServiceTxtRecords();
 
 signals:
 	void servicePublished(void);

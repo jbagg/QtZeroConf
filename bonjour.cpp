@@ -279,7 +279,9 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 			type,
 			domain,
 			NULL,
-			qFromBigEndian<quint16>(port), NULL, NULL, (DNSServiceRegisterReply) QZeroConfPrivate::registerCallback, pri);
+			qFromBigEndian<quint16>(port),
+			pri->txt.size(), pri->txt.data(),
+			(DNSServiceRegisterReply) QZeroConfPrivate::registerCallback, pri);
 
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(pri->dnssRef);
@@ -301,6 +303,24 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 void QZeroConf::stopServicePublish(void)
 {
 	pri->cleanUp(pri->dnssRef);
+}
+
+void QZeroConf::addServiceTxtRecord(QString nameOnly)
+{
+	pri->txt.append((quint8) nameOnly.size());
+	pri->txt.append(nameOnly.toUtf8());
+}
+
+void QZeroConf::addServiceTxtRecord(QString name, QString value)
+{
+	name.append("=");
+	name.append(value);
+	addServiceTxtRecord(name);
+}
+
+void QZeroConf::clearServiceTxtRecords()
+{
+	pri->txt.clear();
 }
 
 void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol)

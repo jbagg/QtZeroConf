@@ -43,6 +43,7 @@ public:
 		pub = parent;
 		group = NULL;
 		browser = NULL;
+		txt = NULL;
 		ready = 0;
 		registerWaiting = 0;
 
@@ -214,7 +215,7 @@ public:
 			return;
 		}
 
-		ret = avahi_server_add_service(server, group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, name, type, domain, NULL, port, NULL);
+		ret = avahi_server_add_service_strlst(server, group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, name, type, domain, NULL, port, txt);
 		if (ret < 0) {
 			avahi_s_entry_group_free(group);
 			group = NULL;
@@ -236,6 +237,7 @@ public:
 	AvahiServerConfig config;
 	AvahiSEntryGroup *group;
 	AvahiSServiceBrowser *browser;
+	AvahiStringList *txt;
 	bool ready, registerWaiting;
 	QString name, type, domain;
 	qint32 port;
@@ -249,6 +251,7 @@ QZeroConf::QZeroConf()
 
 QZeroConf::~QZeroConf()
 {
+	avahi_string_list_free(pri->txt);
 	pri->broswerCleanUp();
 	avahi_server_config_free(&pri->config);
 	if (pri->server)
@@ -279,6 +282,26 @@ void QZeroConf::stopServicePublish(void)
 		avahi_s_entry_group_free(pri->group);
 		pri->group = NULL;
 	}
+}
+
+// http://www.zeroconf.org/rendezvous/txtrecords.html
+
+void QZeroConf::addServiceTxtRecord(QString nameOnly)
+{
+	pri->txt = avahi_string_list_add(pri->txt, nameOnly.toUtf8());
+}
+
+void QZeroConf::addServiceTxtRecord(QString name, QString value)
+{
+	name.append("=");
+	name.append(value);
+	addServiceTxtRecord(name);
+}
+
+void QZeroConf::clearServiceTxtRecords()
+{
+	avahi_string_list_free(pri->txt);
+	pri->txt = NULL;
 }
 
 void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol)
