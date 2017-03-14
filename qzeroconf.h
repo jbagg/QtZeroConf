@@ -32,7 +32,7 @@
 #include <QMap>
 #include <QtCore/QtGlobal>
 
-#ifndef QT_STATIC
+#if (!defined(QT_STATIC) && !defined(QZEROCONF_STATIC))
 #	ifdef QT_BUILD_ZEROCONF_LIB
 #		define Q_ZEROCONF_EXPORT Q_DECL_EXPORT
 #	else

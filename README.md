@@ -21,6 +21,10 @@ QZeroConf can be built directly into your project if your project is [LGPL3](htt
 
     include(qtzeroconf/qtzeroconf.pri)
 
+4. Add QZEROCONF_STATIC define in your projects .pro file
+
+    DEFINES= QZEROCONF_STATIC
+
 #### Compiling as a dynamic library
 
 1. Clone or download QZeroConf.  If you download, unzip.
