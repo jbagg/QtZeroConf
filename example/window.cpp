@@ -106,6 +106,7 @@ void mainWindow::startPublish()
 		return;
 	publishEnabled = 1;
 
+	zeroConf.clearServiceTxtRecords();
 	zeroConf.addServiceTxtRecord("Qt", "the best!");
 	zeroConf.addServiceTxtRecord("ZeroConf is nice too");
 	zeroConf.startServicePublish(buildName().toUtf8(), "_qtzeroconf_test._tcp", "local", 11437);

@@ -142,14 +142,27 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 		const char *hostName, quint16 port, quint16 txtLen,
 		const char * txtRecord, void *userdata)
 {
-	Q_UNUSED(txtLen);
-	Q_UNUSED(txtRecord);
-
 	QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 
 	if (err != kDNSServiceErr_NoError) {
 		ref->cleanUp(ref->resolver);
 		return;
+	}
+
+	qint16 recLen;
+	while (txtLen > 0)		// add txt records
+	{
+		recLen = txtRecord[0];
+		txtRecord++;
+		QByteArray avahiText((const char *)txtRecord, recLen);
+		QList<QByteArray> pair = avahiText.split('=');
+		if (pair.size() == 2)
+			ref->newService->txt[pair.at(0)] = pair.at(1);
+		else
+			ref->newService->txt[pair.at(0)] = "";
+
+		txtLen-= recLen + 1;
+		txtRecord+= recLen;
 	}
 
 	ref->newService->port = qFromBigEndian<quint16>(port);

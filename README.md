@@ -97,6 +97,12 @@ If you are browsing for services published using both ipv4 and ipv6 ( QAbstractS
 
 Only one browser can be in use per instance of QzeroConf.
 
+**Txt records** are placed into a QMap called txt within the discovered service. For example, the txt record value of "Qt=The Best!" can be retrieved with the code... 
+
+```c++
+qDebug() << zcs->txt["Qt"]
+```
+
 ### Build Dependencies
 
 Qt5

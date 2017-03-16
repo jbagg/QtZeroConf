@@ -52,6 +52,7 @@ struct QZeroConfService
 	QHostAddress	ipv6;
 	quint32			interfaceIndex;
 	quint16			port;
+	QMap			<QByteArray, QByteArray> txt;
 };
 
 class QZeroConfPrivate;

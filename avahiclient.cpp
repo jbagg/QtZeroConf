@@ -140,7 +140,7 @@ public:
 	    const char *host_name,
 	    const AvahiAddress *address,
 	    uint16_t port,
-	    AvahiStringList *,
+	    AvahiStringList *txt,
 	    AvahiLookupResultFlags,
 	    AVAHI_GCC_UNUSED void* userdata)
 	{
@@ -161,12 +161,21 @@ public:
 				zcs->host = host_name;
 				zcs->interfaceIndex = interface;
 				zcs->port = port;
+				while (txt)	// get txt records
+				{
+					QByteArray avahiText((const char *)txt->text, txt->size);
+					QList<QByteArray> pair = avahiText.split('=');
+					if (pair.size() == 2)
+						zcs->txt[pair.at(0)] = pair.at(1);
+					else
+						zcs->txt[pair.at(0)] = "";
+					txt = txt->next;
+				}
 				ref->pub->services.insert(key, zcs);
 			}
 
 			char a[AVAHI_ADDRESS_STR_MAX];
 			avahi_address_snprint(a, sizeof(a), address);
-			// fixme maybe add type, and txt records
 			if (protocol == AVAHI_PROTO_INET6)
 				zcs->ipv6 = QHostAddress(a);
 			else if (protocol == AVAHI_PROTO_INET)
