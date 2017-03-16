@@ -164,7 +164,7 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 		txtLen-= recLen + 1;
 		txtRecord+= recLen;
 	}
-
+	ref->newService->host = hostName;
 	ref->newService->port = qFromBigEndian<quint16>(port);
 	err = DNSServiceGetAddrInfo(&ref->resolver, kDNSServiceFlagsForceMulticast, interfaceIndex, ref->protocol, hostName, (DNSServiceGetAddrInfoReply) addressReply, ref);
 	if (err == kDNSServiceErr_NoError) {
