@@ -2,7 +2,7 @@ QT = core network
 
 include($$PWD/qtzeroconf.pri)
 
-VERSION = 1.1
+#VERSION = 1.1
 
 TEMPLATE = lib
 TARGET = $$qtLibraryTarget(QtZeroConf$$QT_LIBINFIX)
