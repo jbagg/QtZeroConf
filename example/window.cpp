@@ -41,6 +41,10 @@
 	#define	OS_NAME		"Linux"
 #elif defined(Q_OS_WIN)
 	#define	OS_NAME		"Windows"
+#elif defined(Q_OS_FREEBSD)
+	#define	OS_NAME		"FreeBSD"
+#else
+	#define	OS_NAME		"Some OS"
 #endif
 
 mainWindow::mainWindow()
