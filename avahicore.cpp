@@ -114,7 +114,7 @@ public:
 			AVAHI_GCC_UNUSED AvahiLookupResultFlags flags,
 			void* userdata)
 	{
-		QString key;
+		QString key = name + QString::number(interface);
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 
 		switch (event) {
@@ -123,10 +123,15 @@ public:
 				emit ref->pub->error(QZeroConf::browserFailed);
 				break;
 			case AVAHI_BROWSER_NEW:
-				avahi_s_service_resolver_new(ref->server, interface, protocol, name, type, domain, AVAHI_PROTO_UNSPEC, AVAHI_LOOKUP_USE_MULTICAST, resolveCallback, ref);
+				if (!ref->resolvers.contains(key))
+					ref->resolvers.insert(key, avahi_s_service_resolver_new(ref->server, interface, protocol, name, type, domain, AVAHI_PROTO_UNSPEC, AVAHI_LOOKUP_USE_MULTICAST, resolveCallback, ref));
 				break;
 			case AVAHI_BROWSER_REMOVE:
-				key = name + QString::number(interface);
+				if (!ref->resolvers.contains(key))
+					return;
+				avahi_s_service_resolver_free(ref->resolvers[key]);
+				ref->resolvers.remove(key);
+
 				if (!ref->pub->services.contains(key))
 					return;
 				QZeroConfService *zcs;
@@ -142,7 +147,7 @@ public:
 	}
 
 	static void resolveCallback(
-	    AvahiSServiceResolver *r,
+	    AVAHI_GCC_UNUSED AvahiSServiceResolver *r,
 	    AVAHI_GCC_UNUSED AvahiIfIndex interface,
 	    AVAHI_GCC_UNUSED AvahiProtocol protocol,
 	    AvahiResolverEvent event,
@@ -157,11 +162,11 @@ public:
 	    AVAHI_GCC_UNUSED void* userdata)
 	{
 		bool newRecord = 0;
+		QZeroConfService *zcs;
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 
+		QString key = name + QString::number(interface);
 		if (event == AVAHI_RESOLVER_FOUND) {
-			QString key = name + QString::number(interface);
-			QZeroConfService *zcs;
 			if (ref->pub->services.contains(key))
 				zcs = ref->pub->services[key];
 			else {
@@ -198,21 +203,31 @@ public:
 			else
 				emit ref->pub->serviceUpdated(zcs);
 		}
-		avahi_s_service_resolver_free(r);
+		else if (ref->pub->services.contains(key)) {	// delete service if exists and unable to resolve
+			zcs = ref->pub->services[key];
+			ref->pub->services.remove(key);
+			emit ref->pub->serviceRemoved(zcs);
+			delete zcs;
+			// don't delete the resolver here...we need to keep it around so Avahi will keep updating....might be able to resolve the service in the future
+		}
 	}
 
 	void broswerCleanUp(void)
 	{
 		if (!browser)
 			return;
+		avahi_s_service_browser_free(browser);
+		browser = NULL;
 
 		QMap<QString, QZeroConfService *>::iterator i;
 		for (i = pub->services.begin(); i != pub->services.end(); i++)
 			delete *i;
 		pub->services.clear();
 
-		avahi_s_service_browser_free(browser);
-		browser = NULL;
+		QMap<QString, AvahiSServiceResolver *>::iterator r;
+		for (r = resolvers.begin(); r != resolvers.end(); r++)
+			avahi_s_service_resolver_free(*r);
+		resolvers.clear();
 	}
 
 	void registerService(const char *name, const char *type, const char *domain, quint16 port)
@@ -246,6 +261,7 @@ public:
 	AvahiServerConfig config;
 	AvahiSEntryGroup *group;
 	AvahiSServiceBrowser *browser;
+	QMap <QString, AvahiSServiceResolver *> resolvers;
 	AvahiStringList *txt;
 	bool ready, registerWaiting;
 	QString name, type, domain;
