@@ -84,7 +84,7 @@ public:
 	void addServiceTxtRecord(QString name, QString value);
 	void clearServiceTxtRecords();
 
-signals:
+Q_SIGNALS:
 	void servicePublished(void);
 	void error(QZeroConf::error_t);
 	void serviceAdded(QZeroConfService *);
@@ -95,7 +95,7 @@ private:
 	QZeroConfPrivate	*pri;
 	QMap<QString, QZeroConfService *> services;
 
-private slots:
+
 
 };
 
