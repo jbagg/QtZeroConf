@@ -64,8 +64,8 @@ public:
 	DNSServiceRef dnssRef, browser, resolver;
 	DNSServiceProtocol protocol;
 	QSocketNotifier *bs, *browserSocket, *resolverSocket, *addressSocket;
-	QZeroConfService *newService;
-	QList<QZeroConfService *> work;
+    QZeroConfService newService;
+    QList<QZeroConfService> work;
 	QByteArray txt;
 
 public slots:

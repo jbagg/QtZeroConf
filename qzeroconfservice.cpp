@@ -1,0 +1,142 @@
+#include "qzeroconfservice.h"
+
+
+class QZeroConfServiceData : public QSharedData
+{
+public:
+    QString			name;
+    QString			type;
+    QString			domain;
+    QString			host;
+    QHostAddress	ip;
+    QHostAddress	ipv6;
+    quint32			interfaceIndex;
+    quint16			port = 0;
+    QMap			<QByteArray, QByteArray> txt;
+
+};
+
+QZeroConfService::QZeroConfService() : data(new QZeroConfServiceData)
+{
+
+}
+
+QZeroConfService::QZeroConfService(const QZeroConfService &rhs) : data(rhs.data)
+{
+
+}
+
+QZeroConfService &QZeroConfService::operator=(const QZeroConfService &rhs)
+{
+    if (this != &rhs)
+        data.operator=(rhs.data);
+    return *this;
+}
+
+QZeroConfService::~QZeroConfService()
+{
+
+}
+
+QString QZeroConfService::name() const
+{
+    return data->name;
+}
+
+void QZeroConfService::setName(const QString &name)
+{
+    data->name = name;
+}
+
+QString QZeroConfService::type() const
+{
+    return data->type;
+}
+
+void QZeroConfService::setType(const QString &type)
+{
+    data->type = type;
+}
+
+QString QZeroConfService::domain() const
+{
+    return  data->domain;
+}
+
+void QZeroConfService::setDomain(const QString &domain)
+{
+    data->domain = domain;
+}
+
+QString QZeroConfService::host() const
+{
+    return data->host;
+}
+
+void QZeroConfService::setHost(const QString &host)
+{
+    data->host = host;
+}
+
+QHostAddress QZeroConfService::ip() const
+{
+    return data->ip;
+}
+
+void QZeroConfService::setIp(QHostAddress &ip)
+{
+    data->ip = ip;
+}
+
+QHostAddress QZeroConfService::ipv6() const
+{
+    return data->ipv6;
+}
+
+void QZeroConfService::setIpv6(const QHostAddress &ipv6)
+{
+    data->ipv6 = ipv6;
+}
+
+quint32 QZeroConfService::interfaceIndex() const
+{
+    return  data->interfaceIndex;
+}
+
+void QZeroConfService::setInterfaceIndex(const quint32 &interfaceIndex)
+{
+    data->interfaceIndex = interfaceIndex;
+}
+
+quint16 QZeroConfService::port() const
+{
+    return data->port;
+}
+
+void QZeroConfService::setPort(const quint16 port)
+{
+    data->port = port;
+}
+
+QMap<QByteArray, QByteArray> QZeroConfService::txt() const
+{
+    return data->txt;
+}
+
+void QZeroConfService::setTxt(const QMap<QByteArray, QByteArray> txt)
+{
+    data->txt = txt;
+}
+
+void QZeroConfService::appendTxt(QByteArray idx, QByteArray val)
+{
+    data->txt[idx] = val;
+}
+
+bool QZeroConfService::isValid() const
+{
+    //TODO is this a proper test
+    return (!data->name.isEmpty()) && (data->port > 0);
+}
+
+

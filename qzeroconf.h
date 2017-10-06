@@ -31,6 +31,7 @@
 #include <QHostAddress>
 #include <QMap>
 #include <QtCore/QtGlobal>
+#include "qzeroconfservice.h"
 
 #if (!defined(QT_STATIC) && !defined(QZEROCONF_STATIC))
 #	ifdef QT_BUILD_ZEROCONF_LIB
@@ -42,18 +43,7 @@
 #	define Q_ZEROCONF_EXPORT
 #endif
 
-struct QZeroConfService
-{
-	QString			name;
-	QString			type;
-	QString			domain;
-	QString			host;
-	QHostAddress	ip;
-	QHostAddress	ipv6;
-	quint32			interfaceIndex;
-	quint16			port;
-	QMap			<QByteArray, QByteArray> txt;
-};
+
 
 class QZeroConfPrivate;
 
@@ -70,7 +60,7 @@ public:
 		serviceNameCollision = -2,
 		browserFailed = -3,
 	};
-	QZeroConf();
+    QZeroConf(QObject *parent = Q_NULLPTR);
 	~QZeroConf();
 	void startServicePublish(const char *name, const char *type, const char *domain, quint16 port);
 	void stopServicePublish(void);
@@ -87,13 +77,13 @@ public:
 Q_SIGNALS:
 	void servicePublished(void);
 	void error(QZeroConf::error_t);
-	void serviceAdded(QZeroConfService *);
-	void serviceUpdated(QZeroConfService *);
-	void serviceRemoved(QZeroConfService *);
+    void serviceAdded(QZeroConfService);
+    void serviceUpdated(QZeroConfService);
+    void serviceRemoved(QZeroConfService);
 
 private:
 	QZeroConfPrivate	*pri;
-	QMap<QString, QZeroConfService *> services;
+    QMap<QString, QZeroConfService> services;
 
 
 
