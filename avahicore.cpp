@@ -311,6 +311,14 @@ void QZeroConf::stopServicePublish(void)
 	}
 }
 
+bool QZeroConf::publishExists(void)
+{
+	if (pri->group)
+		return true;
+	else
+		return false;
+}
+
 // http://www.zeroconf.org/rendezvous/txtrecords.html
 
 void QZeroConf::addServiceTxtRecord(QString nameOnly)
@@ -353,4 +361,12 @@ void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol
 void QZeroConf::stopBrowser(void)
 {
 	pri->broswerCleanUp();
+}
+
+bool QZeroConf::browserExists(void)
+{
+	if (pri->browser)
+		return true;
+	else
+		return false;
 }
