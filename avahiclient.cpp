@@ -208,8 +208,10 @@ public:
 		browser = NULL;
 
 		QMap<QString, QZeroConfService *>::iterator i;
-		for (i = pub->services.begin(); i != pub->services.end(); i++)
+		for (i = pub->services.begin(); i != pub->services.end(); i++) {
+			emit pub->serviceRemoved(*i);
 			delete *i;
+		}
 		pub->services.clear();
 
 		QMap<QString, AvahiServiceResolver *>::iterator r;
