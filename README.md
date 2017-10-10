@@ -115,4 +115,4 @@ Publishing GPL software in the App Store is a [violation of the GPL](https://new
 
 ### iOS device sleep
 
-When iOS puts the device to sleep, it breaks the DNS-SD browser and service publisher.  The only way around this is to call stopServicePublish() and stopBrowser() when the application state changes to Qt::ApplicationSuspended (sleep) and then call start startPublish() and startBrowser() when the application state changes to Qt::ApplicationActive (wake).  See appStateChanged() in example.
+When iOS puts the device to sleep, it breaks the DNS-SD browser and service publisher.  The only way around this is to call stopServicePublish() and stopBrowser() when the application state changes to Qt::ApplicationSuspended (sleep) and then call startPublish() and startBrowser() when the application state changes to Qt::ApplicationActive (wake).  See appStateChanged() in example.
