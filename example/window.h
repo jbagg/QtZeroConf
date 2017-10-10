@@ -40,14 +40,16 @@ public:
 
 private:
 	void buildGUI();
+	void startPublish();
 	QString buildName(void);
 	QTableWidget table;
 	QZeroConf zeroConf;
 	bool publishEnabled;
 
 private slots:
-	void startPublish();
-	void stopPublish();
+	void appStateChanged(Qt::ApplicationState state);
+	void startPublishClicked();
+	void stopPublishClicked();
 	void addService(QZeroConfService *item);
 	void removeService(QZeroConfService *item);
 };
