@@ -24,6 +24,7 @@
    Example app to demonstrate service publishing and service discovery
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
+#include <QGuiApplication>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTableWidgetItem>
@@ -54,9 +55,9 @@ mainWindow::mainWindow()
 
 	connect(&zeroConf, SIGNAL(serviceAdded(QZeroConfService *)), this, SLOT(addService(QZeroConfService *)));
 	connect(&zeroConf, SIGNAL(serviceRemoved(QZeroConfService *)), this, SLOT(removeService(QZeroConfService *)));
+	connect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(appStateChanged(Qt::ApplicationState)));
 
-	zeroConf.startBrowser("_qtzeroconf_test._tcp");
-	startPublish();
+	publishEnabled = 1;
 }
 
 void mainWindow::buildGUI()
@@ -68,13 +69,13 @@ void mainWindow::buildGUI()
 	button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	layout->addWidget(button);
 	layout->setAlignment(button, Qt::AlignHCenter);
-	connect(button, SIGNAL(clicked()), this, SLOT(startPublish()));
+	connect(button, &QPushButton::clicked, this, &mainWindow::startPublishClicked);
 
 	button = new QPushButton(tr(" Disable Publish "));
 	button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	layout->addWidget(button);
 	layout->setAlignment(button, Qt::AlignHCenter);
-	connect(button, SIGNAL(clicked()), this, SLOT(stopPublish()));
+	connect(button, &QPushButton::clicked, this, &mainWindow::stopPublishClicked);
 
 	table.verticalHeader()->hide();
 	table.horizontalHeader()->hide();
@@ -102,21 +103,39 @@ QString mainWindow::buildName(void)
     return name;
 }
 
+void mainWindow::appStateChanged(Qt::ApplicationState state)
+{
+	if (state == Qt::ApplicationSuspended) {
+		zeroConf.stopServicePublish();
+		zeroConf.stopBrowser();
+	}
+	else if (state == Qt::ApplicationActive) {
+		if (publishEnabled && !zeroConf.publishExists())
+			startPublish();
+		if (!zeroConf.browserExists())
+			zeroConf.startBrowser("_qtzeroconf_test._tcp");
+	}
+}
+
 // ---------- Service Publish ----------
 
 void mainWindow::startPublish()
 {
-	if (publishEnabled)
-		return;
-	publishEnabled = 1;
-
 	zeroConf.clearServiceTxtRecords();
 	zeroConf.addServiceTxtRecord("Qt", "the best!");
 	zeroConf.addServiceTxtRecord("ZeroConf is nice too");
 	zeroConf.startServicePublish(buildName().toUtf8(), "_qtzeroconf_test._tcp", "local", 11437);
 }
 
-void mainWindow::stopPublish()
+void mainWindow::startPublishClicked()
+{
+	if (publishEnabled)
+		return;
+	publishEnabled = 1;
+	startPublish();
+}
+
+void mainWindow::stopPublishClicked()
 {
 	if (!publishEnabled)
 		return;

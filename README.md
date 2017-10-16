@@ -108,3 +108,11 @@ qDebug() << zcs->txt["Qt"];
 Qt5
 
 On Linux, libavahi-client-dev and libavahi-common-dev
+
+### Apple App Store deployment
+
+Publishing GPL software in the App Store is a [violation of the GPL](https://news.ycombinator.com/item?id=3488833).  If you need to publish an app in the Apple App Store that uses QZeroConf, please contact me for a copy of QZeroConf with a BSD licence.
+
+### iOS device sleep
+
+When iOS puts the device to sleep, it breaks the DNS-SD browser and service publisher.  The only way around this is to call stopServicePublish() and stopBrowser() when the application state changes to Qt::ApplicationSuspended (sleep) and then call startPublish() and startBrowser() when the application state changes to Qt::ApplicationActive (wake).  See appStateChanged() in example.
