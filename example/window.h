@@ -48,8 +48,8 @@ private:
 private slots:
 	void startPublish();
 	void stopPublish();
-	void addService(QZeroConfService *item);
-	void removeService(QZeroConfService *item);
+    void addService(QZeroConfService item);
+    void removeService(QZeroConfService item);
 };
 
 #endif /* WINDOW_H_ */
