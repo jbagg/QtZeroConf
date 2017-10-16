@@ -139,4 +139,9 @@ bool QZeroConfService::isValid() const
     return (!data->name.isEmpty()) && (data->port > 0);
 }
 
+bool QZeroConfService::operator==(const QZeroConfService &rhs) const
+{
+    return this->name() == rhs.name() && this->ip() == rhs.ip() && this->ipv6() == rhs.ipv6();
+}
+
 

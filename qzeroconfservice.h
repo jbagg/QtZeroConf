@@ -36,6 +36,7 @@ public:
     void appendTxt(QByteArray idx, QByteArray val = "");
 
     bool isValid() const;
+    bool operator==(const QZeroConfService &rhs) const;
 
 private:
     QSharedDataPointer<QZeroConfServiceData> data;
