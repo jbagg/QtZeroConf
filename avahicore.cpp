@@ -271,7 +271,7 @@ public:
 };
 
 
-QZeroConf::QZeroConf()
+QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
 	pri = new QZeroConfPrivate(this);
 }
