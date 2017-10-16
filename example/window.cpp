@@ -55,7 +55,7 @@ mainWindow::mainWindow()
     connect(&zeroConf, SIGNAL(serviceAdded(QZeroConfService )), this, SLOT(addService(QZeroConfService )));
     connect(&zeroConf, SIGNAL(serviceRemoved(QZeroConfService )), this, SLOT(removeService(QZeroConfService )));
 
-	zeroConf.startBrowser("_qtzeroconf_test._tcp");
+    zeroConf.startBrowser("_workstation._tcp");
 	startPublish();
 }
 
