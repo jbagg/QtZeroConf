@@ -265,7 +265,7 @@ void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 	DNSServiceRefDeallocate(toClean);
 }
 
-QZeroConf::QZeroConf()
+QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
 	pri = new QZeroConfPrivate(this);
 }

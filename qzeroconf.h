@@ -70,7 +70,7 @@ public:
 		serviceNameCollision = -2,
 		browserFailed = -3,
 	};
-	QZeroConf();
+    QZeroConf(QObject *parent = Q_NULLPTR);
 	~QZeroConf();
 	void startServicePublish(const char *name, const char *type, const char *domain, quint16 port);
 	void stopServicePublish(void);
