@@ -135,8 +135,8 @@ void QZeroConfService::appendTxt(QByteArray idx, QByteArray val)
 
 bool QZeroConfService::isValid() const
 {
-    //TODO is this a proper test
-    return (!data->name.isEmpty()) && (data->port > 0);
+
+    return (!data->name.isEmpty());
 }
 
 bool QZeroConfService::operator==(const QZeroConfService &rhs) const
