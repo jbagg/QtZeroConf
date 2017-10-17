@@ -8,7 +8,14 @@ class QZeroConfServiceData;
 
 class QZeroConfService
 {
+    Q_GADGET
+    Q_PROPERTY( QString name READ name )
+    Q_PROPERTY( QString type READ type )
+    Q_PROPERTY( QString domain READ domain )
+    Q_PROPERTY( QString host READ host )
+
 public:
+
     QZeroConfService();
     QZeroConfService(const QZeroConfService &);
     QZeroConfService &operator=(const QZeroConfService &);
@@ -41,5 +48,7 @@ public:
 private:
     QSharedDataPointer<QZeroConfServiceData> data;
 };
+
+Q_DECLARE_METATYPE(QZeroConfService)
 
 #endif // QZEROCONFSERVICE_H
