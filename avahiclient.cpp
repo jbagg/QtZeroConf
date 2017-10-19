@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-   Project name : QtZeroConf
-   File name    : avahiclient.cpp
-   Created      : 20 July 2015
-   Author(s)    : Jonathan Bagg
+	 Project name : QtZeroConf
+	 File name    : avahiclient.cpp
+	 Created      : 20 July 2015
+	 Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-   Avahi-client wrapper for use in Desktop Linux systems
+	 Avahi-client wrapper for use in Desktop Linux systems
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 //#include <avahi-qt4/qt-watch.h>	//
@@ -105,7 +105,7 @@ public:
 		QString key = name + QString::number(interface);
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 
-        QZeroConfService zcs;
+		QZeroConfService zcs;
 
 		switch (event) {
 		case AVAHI_BROWSER_FAILURE:
@@ -129,29 +129,29 @@ public:
 			ref->pub->services.remove(key);
 			emit ref->pub->serviceRemoved(zcs);
 			break;
-        case AVAHI_BROWSER_ALL_FOR_NOW:
+		case AVAHI_BROWSER_ALL_FOR_NOW:
 		case AVAHI_BROWSER_CACHE_EXHAUSTED:
 			break;
 		}
 	}
 
 	static void resolveCallback(
-	    AVAHI_GCC_UNUSED AvahiServiceResolver *r,
-	    AVAHI_GCC_UNUSED AvahiIfIndex interface,
-	    AVAHI_GCC_UNUSED AvahiProtocol protocol,
-	    AvahiResolverEvent event,
-	    const char *name,
-	    const char *type,
-	    const char *domain,
-	    const char *host_name,
-	    const AvahiAddress *address,
-	    uint16_t port,
-	    AvahiStringList *txt,
-	    AvahiLookupResultFlags,
-	    AVAHI_GCC_UNUSED void* userdata)
+			AVAHI_GCC_UNUSED AvahiServiceResolver *r,
+			AVAHI_GCC_UNUSED AvahiIfIndex interface,
+			AVAHI_GCC_UNUSED AvahiProtocol protocol,
+			AvahiResolverEvent event,
+			const char *name,
+			const char *type,
+			const char *domain,
+			const char *host_name,
+			const AvahiAddress *address,
+			uint16_t port,
+			AvahiStringList *txt,
+			AvahiLookupResultFlags,
+			AVAHI_GCC_UNUSED void* userdata)
 	{
 		bool newRecord = 0;
-        QZeroConfService zcs;
+		QZeroConfService zcs;
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 
 		QString key = name + QString::number(interface);
@@ -159,21 +159,21 @@ public:
 			if (ref->pub->services.contains(key))
 				zcs = ref->pub->services[key];
 			else {
-				newRecord = 1;				
-                zcs.setName(name);
-                zcs.setType(type);
-                zcs.setDomain( domain);
-                zcs.setHost( host_name);
-                zcs.setInterfaceIndex(interface);
-                zcs.setPort(port);
+				newRecord = 1;
+				zcs.setName(name);
+				zcs.setType(type);
+				zcs.setDomain( domain);
+				zcs.setHost( host_name);
+				zcs.setInterfaceIndex(interface);
+				zcs.setPort(port);
 				while (txt)	// get txt records
 				{
 					QByteArray avahiText((const char *)txt->text, txt->size);
 					QList<QByteArray> pair = avahiText.split('=');
 					if (pair.size() == 2)
-                        zcs.appendTxt(pair.at(0), pair.at(1));
+						zcs.appendTxt(pair.at(0), pair.at(1));
 					else
-                        zcs.appendTxt(pair.at(0));
+						zcs.appendTxt(pair.at(0));
 					txt = txt->next;
 				}
 				ref->pub->services.insert(key, zcs);
@@ -181,11 +181,11 @@ public:
 
 			char a[AVAHI_ADDRESS_STR_MAX];
 			avahi_address_snprint(a, sizeof(a), address);
-            QHostAddress addr(a);
+			QHostAddress addr(a);
 			if (protocol == AVAHI_PROTO_INET6)
-                zcs.setIpv6(addr);
+				zcs.setIpv6(addr);
 			else if (protocol == AVAHI_PROTO_INET)
-                zcs.setIp(addr);
+				zcs.setIp(addr);
 
 			if (newRecord)
 				emit ref->pub->serviceAdded(zcs);
@@ -196,7 +196,7 @@ public:
 			zcs = ref->pub->services[key];
 			ref->pub->services.remove(key);
 			emit ref->pub->serviceRemoved(zcs);
-            // don't delete the resolver here...we need to keep it around so Avahi will keep updating....might be able to resolve the service in the future
+			// don't delete the resolver here...we need to keep it around so Avahi will keep updating....might be able to resolve the service in the future
 		}
 	}
 
@@ -207,9 +207,9 @@ public:
 		avahi_service_browser_free(browser);
 		browser = NULL;
 
-        QMap<QString, QZeroConfService>::iterator i;
+		QMap<QString, QZeroConfService>::iterator i;
 		for (i = pub->services.begin(); i != pub->services.end(); i++) {
-            emit pub->serviceRemoved(i.value());
+				emit pub->serviceRemoved(i.value());
 
 		}
 
@@ -217,7 +217,7 @@ public:
 
 		QMap<QString, AvahiServiceResolver *>::iterator r;
 		for (r = resolvers.begin(); r != resolvers.end(); r++)
-		    avahi_service_resolver_free(*r);
+				avahi_service_resolver_free(*r);
 		resolvers.clear();
 	}
 
@@ -303,7 +303,7 @@ void QZeroConf::clearServiceTxtRecords()
 
 void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol)
 {
- 	AvahiProtocol	avahiProtocol;
+	 AvahiProtocol	avahiProtocol;
 
 	if (pri->browser)
 		emit error(QZeroConf::browserFailed);
