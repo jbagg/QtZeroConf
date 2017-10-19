@@ -141,7 +141,7 @@ bool QZeroConfService::isValid() const
 
 bool QZeroConfService::operator==(const QZeroConfService &rhs) const
 {
-    return this->name() == rhs.name() && this->ip() == rhs.ip() && this->ipv6() == rhs.ipv6();
+    return this->name() == rhs.name() && (this->ip() == rhs.ip() || this->ipv6() == rhs.ipv6());
 }
 
 

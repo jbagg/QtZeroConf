@@ -245,6 +245,12 @@ void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 			delete browserSocket;
 			browserSocket = NULL;
 		}
+
+        QMap<QString, QZeroConfService >::iterator i;
+		for (i = pub->services.begin(); i != pub->services.end(); i++) {
+			emit pub->serviceRemoved(*i);
+		}
+
 		pub->services.clear();
 	}
 	else if (toClean == dnssRef) {
@@ -311,6 +317,14 @@ void QZeroConf::stopServicePublish(void)
 	pri->cleanUp(pri->dnssRef);
 }
 
+bool QZeroConf::publishExists(void)
+{
+	if (pri->dnssRef)
+		return true;
+	else
+		return false;
+}
+
 void QZeroConf::addServiceTxtRecord(QString nameOnly)
 {
 	pri->txt.append((quint8) nameOnly.size());
@@ -366,4 +380,12 @@ void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol
 void QZeroConf::stopBrowser(void)
 {
 	pri->cleanUp(pri->browser);
+}
+
+bool QZeroConf::browserExists(void)
+{
+	if (pri->browser)
+		return true;
+	else
+		return false;
 }
