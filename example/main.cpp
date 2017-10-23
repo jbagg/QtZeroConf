@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-	 Project name : QtZeroConf Example
-	 File name    : main.cpp
-	 Created      : 3 November 2015
-	 Author(s)    : Jonathan Bagg
+   Project name : QtZeroConf Example
+   File name    : main.cpp
+   Created      : 3 November 2015
+   Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-	 Example app to demonstrate service publishing and service discovery
+   Example app to demonstrate service publishing and service discovery
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 #include <QApplication>

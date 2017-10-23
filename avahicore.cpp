@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-	 Project name : QtZeroConf
-	 File name    : avahicore.cpp
-	 Created      : 9 September 2015
-	 Author(s)    : Jonathan Bagg
+   Project name : QtZeroConf
+   File name    : avahicore.cpp
+   Created      : 9 September 2015
+   Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-	 Avahi-core wrapper for use in embedded Linux systems (Android)
+   Avahi-core wrapper for use in embedded Linux systems (Android)
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 //#include <avahi-qt4/qt-watch.h>	//
@@ -67,9 +67,9 @@ public:
 		switch (state) {
 			case AVAHI_SERVER_RUNNING:
 				ref->ready = 1;
-								if (ref->registerWaiting) {
-										ref->registerWaiting = 0;
-										ref->registerService(ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), ref->port);
+                if (ref->registerWaiting) {
+                    ref->registerWaiting = 0;
+                    ref->registerService(ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), ref->port);
 				}
 				break;
 			case AVAHI_SERVER_COLLISION:
@@ -147,19 +147,19 @@ public:
 	}
 
 	static void resolveCallback(
-			AVAHI_GCC_UNUSED AvahiSServiceResolver *r,
-			AVAHI_GCC_UNUSED AvahiIfIndex interface,
-			AVAHI_GCC_UNUSED AvahiProtocol protocol,
-			AvahiResolverEvent event,
-			const char *name,
-			const char *type,
-			const char *domain,
-			const char *host_name,
-			const AvahiAddress *address,
-			uint16_t port,
-			AvahiStringList *txt,
-			AvahiLookupResultFlags,
-			AVAHI_GCC_UNUSED void* userdata)
+	    AVAHI_GCC_UNUSED AvahiSServiceResolver *r,
+	    AVAHI_GCC_UNUSED AvahiIfIndex interface,
+	    AVAHI_GCC_UNUSED AvahiProtocol protocol,
+	    AvahiResolverEvent event,
+	    const char *name,
+	    const char *type,
+	    const char *domain,
+	    const char *host_name,
+	    const AvahiAddress *address,
+	    uint16_t port,
+	    AvahiStringList *txt,
+	    AvahiLookupResultFlags,
+	    AVAHI_GCC_UNUSED void* userdata)
 	{
 		bool newRecord = 0;
 		QZeroConfService *zcs;

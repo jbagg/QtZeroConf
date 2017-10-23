@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-	 Project name : QtZeroConf
-	 File name    : bonjour_p.h
-	 Created      : 22 July 2015
-	 Author(s)    : Jonathan Bagg
+   Project name : QtZeroConf
+   File name    : bonjour_p.h
+   Created      : 22 July 2015
+   Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-	 Part of wrapper for Apple's Bonjour library for use on Windows, MACs and iOS.  Needed for slots.
+   Part of wrapper for Apple's Bonjour library for use on Windows, MACs and iOS.  Needed for slots.
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 #ifndef QZEROCONFPRIVATE_H_

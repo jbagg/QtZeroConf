@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-	 Project name : QtZeroConf Example
-	 File name    : window.h
-	 Created      : 3 November 2015
-	 Author(s)    : Jonathan Bagg
+   Project name : QtZeroConf Example
+   File name    : window.h
+   Created      : 3 November 2015
+   Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-	 Example app to demonstrate service publishing and service discovery
+   Example app to demonstrate service publishing and service discovery
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 #ifndef WINDOW_H_
@@ -47,13 +47,11 @@ private:
 	bool publishEnabled;
 
 private slots:
-
 	void appStateChanged(Qt::ApplicationState state);
 	void startPublishClicked();
 	void stopPublishClicked();
 	void addService(QZeroConfService item);
 	void removeService(QZeroConfService item);
-
 };
 
 #endif /* WINDOW_H_ */

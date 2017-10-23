@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-	 Project name : QtZeroConf
-	 File name    : qzeroconf.h
-	 Created      : 20 July 2015
-	 Author(s)    : Jonathan Bagg
+   Project name : QtZeroConf
+   File name    : qzeroconf.h
+   Created      : 20 July 2015
+   Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-	 QtZeroConf class definition
+   QtZeroConf class definition
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 #ifndef QZEROCONF_H_
@@ -43,8 +43,6 @@
 #	define Q_ZEROCONF_EXPORT
 #endif
 
-
-
 class QZeroConfPrivate;
 
 class Q_ZEROCONF_EXPORT QZeroConf : public QObject
@@ -60,7 +58,7 @@ public:
 		serviceNameCollision = -2,
 		browserFailed = -3,
 	};
-	QZeroConf(QObject *parent = Q_NULLPTR);
+    QZeroConf(QObject *parent = Q_NULLPTR);
 	~QZeroConf();
 	void startServicePublish(const char *name, const char *type, const char *domain, quint16 port);
 	void stopServicePublish(void);

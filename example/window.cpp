@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-	 Project name : QtZeroConf Example
-	 File name    : window.cpp
-	 Created      : 3 November 2015
-	 Author(s)    : Jonathan Bagg
+   Project name : QtZeroConf Example
+   File name    : window.cpp
+   Created      : 3 November 2015
+   Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-	 Example app to demonstrate service publishing and service discovery
+   Example app to demonstrate service publishing and service discovery
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 #include <QGuiApplication>
@@ -53,13 +53,11 @@ mainWindow::mainWindow()
 	publishEnabled = 0;
 	buildGUI();
 
-
 	connect(&zeroConf, &QZeroConf::serviceAdded, this, &mainWindow::addService);
 	connect(&zeroConf, &QZeroConf::serviceRemoved, this, &mainWindow::removeService);
 	connect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(appStateChanged(Qt::ApplicationState)));
 
 	publishEnabled = 1;
-
 }
 
 void mainWindow::buildGUI()
@@ -93,7 +91,7 @@ void mainWindow::buildGUI()
 
 QString mainWindow::buildName(void)
 {
-	QString name;
+    QString name;
 
 	QList<QNetworkInterface> list = QNetworkInterface::allInterfaces(); // now you have interfaces list
 
@@ -102,7 +100,7 @@ QString mainWindow::buildName(void)
 	name.remove(0, 6);
 	name+= ')';
 	name.prepend("Qt ZeroConf Test - " OS_NAME " (");
-		return name;
+    return name;
 }
 
 void mainWindow::appStateChanged(Qt::ApplicationState state)
@@ -154,9 +152,9 @@ void mainWindow::addService(QZeroConfService zcs)
 
 	row = table.rowCount();
 	table.insertRow(row);
-		cell = new QTableWidgetItem(zcs.name());
+	cell = new QTableWidgetItem(zcs.name());
 	table.setItem(row, 0, cell);
-		cell = new QTableWidgetItem(zcs.ip().toString());
+	cell = new QTableWidgetItem(zcs.ip().toString());
 	table.setItem(row, 1, cell);
 	table.resizeColumnsToContents();
 	#if !(defined(Q_OS_IOS) || defined(Q_OS_ANDROID))
@@ -169,12 +167,12 @@ void mainWindow::removeService(QZeroConfService zcs)
 	qint32 i, row;
 	QTableWidgetItem *nameItem, *ipItem;
 
-		QList <QTableWidgetItem*> search = table.findItems(zcs.name(), Qt::MatchExactly);
+	QList <QTableWidgetItem*> search = table.findItems(zcs.name(), Qt::MatchExactly);
 	for (i=0; i<search.size(); i++) {
 		nameItem = search.at(i);
 		row = nameItem->row();
 		ipItem = table.item(row, 1);
-				if (table.item(row, 1)->text() == zcs.ip().toString()) {		// match ip address in case of dual homed systems
+		if (table.item(row, 1)->text() == zcs.ip().toString()) {		// match ip address in case of dual homed systems
 			delete nameItem;
 			delete ipItem;
 			table.removeRow(row);

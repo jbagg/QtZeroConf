@@ -16,12 +16,12 @@
 	You should have received a copy of the GNU Lesser General Public License
 	along with QtZeroConf.  If not, see <http://www.gnu.org/licenses/>.
 ---------------------------------------------------------------------------------------------------
-	 Project name : QtZeroConf
-	 File name    : avahiclient.cpp
-	 Created      : 20 July 2015
-	 Author(s)    : Jonathan Bagg
+   Project name : QtZeroConf
+   File name    : avahiclient.cpp
+   Created      : 20 July 2015
+   Author(s)    : Jonathan Bagg
 ---------------------------------------------------------------------------------------------------
-	 Avahi-client wrapper for use in Desktop Linux systems
+   Avahi-client wrapper for use in Desktop Linux systems
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 //#include <avahi-qt4/qt-watch.h>	//
@@ -136,19 +136,19 @@ public:
 	}
 
 	static void resolveCallback(
-			AVAHI_GCC_UNUSED AvahiServiceResolver *r,
-			AVAHI_GCC_UNUSED AvahiIfIndex interface,
-			AVAHI_GCC_UNUSED AvahiProtocol protocol,
-			AvahiResolverEvent event,
-			const char *name,
-			const char *type,
-			const char *domain,
-			const char *host_name,
-			const AvahiAddress *address,
-			uint16_t port,
-			AvahiStringList *txt,
-			AvahiLookupResultFlags,
-			AVAHI_GCC_UNUSED void* userdata)
+	    AVAHI_GCC_UNUSED AvahiServiceResolver *r,
+	    AVAHI_GCC_UNUSED AvahiIfIndex interface,
+	    AVAHI_GCC_UNUSED AvahiProtocol protocol,
+	    AvahiResolverEvent event,
+	    const char *name,
+	    const char *type,
+	    const char *domain,
+	    const char *host_name,
+	    const AvahiAddress *address,
+	    uint16_t port,
+	    AvahiStringList *txt,
+	    AvahiLookupResultFlags,
+	    AVAHI_GCC_UNUSED void* userdata)
 	{
 		bool newRecord = 0;
 		QZeroConfService zcs;
@@ -162,8 +162,8 @@ public:
 				newRecord = 1;
 				zcs.setName(name);
 				zcs.setType(type);
-				zcs.setDomain( domain);
-				zcs.setHost( host_name);
+				zcs.setDomain(domain);
+				zcs.setHost(host_name);
 				zcs.setInterfaceIndex(interface);
 				zcs.setPort(port);
 				while (txt)	// get txt records
@@ -209,15 +209,13 @@ public:
 
 		QMap<QString, QZeroConfService>::iterator i;
 		for (i = pub->services.begin(); i != pub->services.end(); i++) {
-				emit pub->serviceRemoved(i.value());
-
+			emit pub->serviceRemoved(i.value());
 		}
-
 		pub->services.clear();
 
 		QMap<QString, AvahiServiceResolver *>::iterator r;
 		for (r = resolvers.begin(); r != resolvers.end(); r++)
-				avahi_service_resolver_free(*r);
+		    avahi_service_resolver_free(*r);
 		resolvers.clear();
 	}
 
@@ -233,8 +231,7 @@ public:
 };
 
 
-
-QZeroConf::QZeroConf(QObject *parent) : QObject(parent)
+QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
 	pri = new QZeroConfPrivate(this);
 }
@@ -303,7 +300,7 @@ void QZeroConf::clearServiceTxtRecords()
 
 void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol)
 {
-	 AvahiProtocol	avahiProtocol;
+ 	AvahiProtocol	avahiProtocol;
 
 	if (pri->browser)
 		emit error(QZeroConf::browserFailed);
