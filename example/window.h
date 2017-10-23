@@ -50,8 +50,8 @@ private slots:
 	void appStateChanged(Qt::ApplicationState state);
 	void startPublishClicked();
 	void stopPublishClicked();
-	void addService(QZeroConfService *item);
-	void removeService(QZeroConfService *item);
+	void addService(QZeroConfService item);
+	void removeService(QZeroConfService item);
 };
 
 #endif /* WINDOW_H_ */

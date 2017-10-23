@@ -105,6 +105,8 @@ public:
 		QString key = name + QString::number(interface);
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 
+		QZeroConfService zcs;
+
 		switch (event) {
 		case AVAHI_BROWSER_FAILURE:
 			ref->broswerCleanUp();
@@ -122,11 +124,10 @@ public:
 
 			if (!ref->pub->services.contains(key))
 				return;
-			QZeroConfService *zcs;
+
 			zcs = ref->pub->services[key];
 			ref->pub->services.remove(key);
 			emit ref->pub->serviceRemoved(zcs);
-			delete zcs;
 			break;
 		case AVAHI_BROWSER_ALL_FOR_NOW:
 		case AVAHI_BROWSER_CACHE_EXHAUSTED:
@@ -150,7 +151,7 @@ public:
 	    AVAHI_GCC_UNUSED void* userdata)
 	{
 		bool newRecord = 0;
-		QZeroConfService *zcs;
+		QZeroConfService zcs;
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 
 		QString key = name + QString::number(interface);
@@ -159,21 +160,20 @@ public:
 				zcs = ref->pub->services[key];
 			else {
 				newRecord = 1;
-				zcs = new QZeroConfService;
-				zcs->name = name;
-				zcs->type = type;
-				zcs->domain = domain;
-				zcs->host = host_name;
-				zcs->interfaceIndex = interface;
-				zcs->port = port;
+				zcs.setName(name);
+				zcs.setType(type);
+				zcs.setDomain(domain);
+				zcs.setHost(host_name);
+				zcs.setInterfaceIndex(interface);
+				zcs.setPort(port);
 				while (txt)	// get txt records
 				{
 					QByteArray avahiText((const char *)txt->text, txt->size);
 					QList<QByteArray> pair = avahiText.split('=');
 					if (pair.size() == 2)
-						zcs->txt[pair.at(0)] = pair.at(1);
+						zcs.appendTxt(pair.at(0), pair.at(1));
 					else
-						zcs->txt[pair.at(0)] = "";
+						zcs.appendTxt(pair.at(0));
 					txt = txt->next;
 				}
 				ref->pub->services.insert(key, zcs);
@@ -181,10 +181,11 @@ public:
 
 			char a[AVAHI_ADDRESS_STR_MAX];
 			avahi_address_snprint(a, sizeof(a), address);
+			QHostAddress addr(a);
 			if (protocol == AVAHI_PROTO_INET6)
-				zcs->ipv6 = QHostAddress(a);
+				zcs.setIpv6(addr);
 			else if (protocol == AVAHI_PROTO_INET)
-				zcs->ip = QHostAddress (a);
+				zcs.setIp(addr);
 
 			if (newRecord)
 				emit ref->pub->serviceAdded(zcs);
@@ -195,7 +196,6 @@ public:
 			zcs = ref->pub->services[key];
 			ref->pub->services.remove(key);
 			emit ref->pub->serviceRemoved(zcs);
-			delete zcs;
 			// don't delete the resolver here...we need to keep it around so Avahi will keep updating....might be able to resolve the service in the future
 		}
 	}
@@ -207,10 +207,9 @@ public:
 		avahi_service_browser_free(browser);
 		browser = NULL;
 
-		QMap<QString, QZeroConfService *>::iterator i;
+		QMap<QString, QZeroConfService>::iterator i;
 		for (i = pub->services.begin(); i != pub->services.end(); i++) {
-			emit pub->serviceRemoved(*i);
-			delete *i;
+			emit pub->serviceRemoved(i.value());
 		}
 		pub->services.clear();
 
