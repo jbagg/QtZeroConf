@@ -53,8 +53,8 @@ mainWindow::mainWindow()
 	publishEnabled = 0;
 	buildGUI();
 
-	connect(&zeroConf, SIGNAL(serviceAdded(QZeroConfService *)), this, SLOT(addService(QZeroConfService *)));
-	connect(&zeroConf, SIGNAL(serviceRemoved(QZeroConfService *)), this, SLOT(removeService(QZeroConfService *)));
+	connect(&zeroConf, &QZeroConf::serviceAdded, this, &mainWindow::addService);
+	connect(&zeroConf, &QZeroConf::serviceRemoved, this, &mainWindow::removeService);
 	connect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(appStateChanged(Qt::ApplicationState)));
 
 	publishEnabled = 1;
@@ -145,16 +145,16 @@ void mainWindow::stopPublishClicked()
 
 // ---------- Discovery Callbacks ----------
 
-void mainWindow::addService(QZeroConfService *zcs)
+void mainWindow::addService(QZeroConfService zcs)
 {
 	qint32 row;
 	QTableWidgetItem *cell;
 
 	row = table.rowCount();
 	table.insertRow(row);
-	cell = new QTableWidgetItem(zcs->name);
+	cell = new QTableWidgetItem(zcs.name());
 	table.setItem(row, 0, cell);
-	cell = new QTableWidgetItem(zcs->ip.toString());
+	cell = new QTableWidgetItem(zcs.ip().toString());
 	table.setItem(row, 1, cell);
 	table.resizeColumnsToContents();
 	#if !(defined(Q_OS_IOS) || defined(Q_OS_ANDROID))
@@ -162,17 +162,17 @@ void mainWindow::addService(QZeroConfService *zcs)
 	#endif
 }
 
-void mainWindow::removeService(QZeroConfService *zcs)
+void mainWindow::removeService(QZeroConfService zcs)
 {
 	qint32 i, row;
 	QTableWidgetItem *nameItem, *ipItem;
 
-	QList <QTableWidgetItem*> search = table.findItems(zcs->name, Qt::MatchExactly);
+	QList <QTableWidgetItem*> search = table.findItems(zcs.name(), Qt::MatchExactly);
 	for (i=0; i<search.size(); i++) {
 		nameItem = search.at(i);
 		row = nameItem->row();
 		ipItem = table.item(row, 1);
-		if (table.item(row, 1)->text() == zcs->ip.toString()) {		// match ip address in case of dual homed systems
+		if (table.item(row, 1)->text() == zcs.ip().toString()) {		// match ip address in case of dual homed systems
 			delete nameItem;
 			delete ipItem;
 			table.removeRow(row);
