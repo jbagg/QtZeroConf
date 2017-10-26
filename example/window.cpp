@@ -31,6 +31,7 @@
 #include <QNetworkInterface>
 #include <QHeaderView>
 #include "window.h"
+#include <QDebug>
 
 #ifdef Q_OS_IOS
 	#define	OS_NAME		"iOS"
@@ -150,6 +151,8 @@ void mainWindow::addService(QZeroConfService zcs)
 	qint32 row;
 	QTableWidgetItem *cell;
 
+    qDebug() << "Added service: " << zcs;
+
 	row = table.rowCount();
 	table.insertRow(row);
 	cell = new QTableWidgetItem(zcs.name());
@@ -166,6 +169,8 @@ void mainWindow::removeService(QZeroConfService zcs)
 {
 	qint32 i, row;
 	QTableWidgetItem *nameItem, *ipItem;
+
+    qDebug() << "Removed service: " << zcs;
 
 	QList <QTableWidgetItem*> search = table.findItems(zcs.name(), Qt::MatchExactly);
 	for (i=0; i<search.size(); i++) {
