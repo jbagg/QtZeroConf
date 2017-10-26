@@ -38,7 +38,6 @@ QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 	resolverSocket = NULL;
 	addressSocket = NULL;
 
-
 }
 
 void QZeroConfPrivate::bsRead()
