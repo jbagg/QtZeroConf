@@ -37,6 +37,8 @@ QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 	browserSocket = NULL;
 	resolverSocket = NULL;
 	addressSocket = NULL;
+
+
 }
 
 void QZeroConfPrivate::bsRead()
@@ -261,6 +263,7 @@ void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 
 QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
+    qRegisterMetaType<QZeroConfService>("QZeroConfService");
 	pri = new QZeroConfPrivate(this);
 }
 
