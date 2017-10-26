@@ -37,6 +37,8 @@ QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 	browserSocket = NULL;
 	resolverSocket = NULL;
 	addressSocket = NULL;
+
+    qRegisterMetaType<QZeroConfService>();
 }
 
 void QZeroConfPrivate::bsRead()
