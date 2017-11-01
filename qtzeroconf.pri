@@ -116,8 +116,6 @@ android {
 	#avahi-core/iface-none.c avahi-core/iface-pfroute.c avahi-core/avahi-reflector.c
 }
 
-HEADERS += \
-    $$PWD/qzeroconfservice.h
+HEADERS+= $$PWD/qzeroconfservice.h $$PWD/qzeroconfglobal.h
 
-SOURCES += \
-    $$PWD/qzeroconfservice.cpp
+SOURCES+= $$PWD/qzeroconfservice.cpp

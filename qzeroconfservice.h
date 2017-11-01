@@ -3,10 +3,11 @@
 
 #include <QSharedDataPointer>
 #include <QHostAddress>
+#include "qzeroconfglobal.h"
 
 class QZeroConfServiceData;
 
-class QZeroConfService
+class Q_ZEROCONF_EXPORT QZeroConfService
 {
 	Q_GADGET
 	Q_PROPERTY( QString name READ name )
