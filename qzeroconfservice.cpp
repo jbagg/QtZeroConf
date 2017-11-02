@@ -4,6 +4,7 @@
 class QZeroConfServiceData : public QSharedData
 {
 public:
+
 	QString			name;
 	QString			type;
 	QString			domain;
@@ -41,6 +42,7 @@ QZeroConfService::~QZeroConfService()
 QString QZeroConfService::name() const
 {
 	return data->name;
+
 }
 
 void QZeroConfService::setName(const QString &name)
@@ -140,5 +142,12 @@ bool QZeroConfService::isValid() const
 
 bool QZeroConfService::operator==(const QZeroConfService &rhs) const
 {
-	return this->name() == rhs.name() && (this->ip() == rhs.ip() || this->ipv6() == rhs.ipv6());
+	return this->name() == rhs.name() &&  (this->ip() == rhs.ip() || this->ipv6() == rhs.ipv6());
+}
+
+QDebug operator<<(QDebug debug, const QZeroConfService &service)
+{
+	QDebugStateSaver saver(debug);
+	debug.nospace() << "Zeroconf Service: " + service.name() + " @ " + service.host() + " ("+ service.ip().toString()  + ":" + QString::number( service.port()) + ")";
+	return debug.maybeSpace();
 }

@@ -3,6 +3,7 @@
 
 #include <QExplicitlySharedDataPointer>
 #include <QHostAddress>
+#include <QDebug>
 #include "qzeroconfglobal.h"
 
 class QZeroConfServiceData;
@@ -49,6 +50,8 @@ public:
 private:
 	QExplicitlySharedDataPointer<QZeroConfServiceData> data;
 };
+
+ QDebug operator<<(QDebug debug, const QZeroConfService &service);
 
 Q_DECLARE_METATYPE(QZeroConfService)
 

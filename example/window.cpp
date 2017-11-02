@@ -31,6 +31,7 @@
 #include <QNetworkInterface>
 #include <QHeaderView>
 #include "window.h"
+#include <QDebug>
 
 #ifdef Q_OS_IOS
 	#define	OS_NAME		"iOS"
@@ -54,7 +55,8 @@ mainWindow::mainWindow()
 	buildGUI();
 
 	connect(&zeroConf, &QZeroConf::serviceAdded, this, &mainWindow::addService);
-	connect(&zeroConf, &QZeroConf::serviceRemoved, this, &mainWindow::removeService);
+    connect(&zeroConf, &QZeroConf::serviceUpdated, this, &mainWindow::updateService);
+    connect(&zeroConf, &QZeroConf::serviceRemoved, this, &mainWindow::removeService);
 	connect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(appStateChanged(Qt::ApplicationState)));
 
 	publishEnabled = 1;
@@ -150,6 +152,8 @@ void mainWindow::addService(QZeroConfService zcs)
 	qint32 row;
 	QTableWidgetItem *cell;
 
+    qDebug() << "Added service: " << zcs;
+
 	row = table.rowCount();
 	table.insertRow(row);
 	cell = new QTableWidgetItem(zcs.name());
@@ -162,10 +166,17 @@ void mainWindow::addService(QZeroConfService zcs)
 	#endif
 }
 
+void mainWindow::updateService(QZeroConfService zcs)
+{
+    qDebug() << "Service updated: " << zcs;
+}
+
 void mainWindow::removeService(QZeroConfService zcs)
 {
 	qint32 i, row;
 	QTableWidgetItem *nameItem, *ipItem;
+
+    qDebug() << "Removed service: " << zcs;
 
 	QList <QTableWidgetItem*> search = table.findItems(zcs.name(), Qt::MatchExactly);
 	for (i=0; i<search.size(); i++) {
