@@ -30,6 +30,7 @@
 #include <QTableWidgetItem>
 #include <QNetworkInterface>
 #include <QHeaderView>
+#include <QDebug>
 #include "window.h"
 
 #ifdef Q_OS_IOS
@@ -55,6 +56,7 @@ mainWindow::mainWindow()
 
 	connect(&zeroConf, &QZeroConf::serviceAdded, this, &mainWindow::addService);
 	connect(&zeroConf, &QZeroConf::serviceRemoved, this, &mainWindow::removeService);
+	connect(&zeroConf, &QZeroConf::serviceUpdated, this, &mainWindow::updateService);
 	connect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(appStateChanged(Qt::ApplicationState)));
 
 	publishEnabled = 1;
@@ -149,6 +151,7 @@ void mainWindow::addService(QZeroConfService zcs)
 {
 	qint32 row;
 	QTableWidgetItem *cell;
+	qDebug() << "Added service: " << zcs;
 
 	row = table.rowCount();
 	table.insertRow(row);
@@ -166,6 +169,7 @@ void mainWindow::removeService(QZeroConfService zcs)
 {
 	qint32 i, row;
 	QTableWidgetItem *nameItem, *ipItem;
+	qDebug() << "Removed service: " << zcs;
 
 	QList <QTableWidgetItem*> search = table.findItems(zcs.name(), Qt::MatchExactly);
 	for (i=0; i<search.size(); i++) {
@@ -178,4 +182,9 @@ void mainWindow::removeService(QZeroConfService zcs)
 			table.removeRow(row);
 		}
 	}
+}
+
+void mainWindow::updateService(QZeroConfService zcs)
+{
+	qDebug() << "Service updated: " << zcs;
 }

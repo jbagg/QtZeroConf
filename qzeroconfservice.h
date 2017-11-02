@@ -50,6 +50,8 @@ private:
 	QExplicitlySharedDataPointer<QZeroConfServiceData> data;
 };
 
+QDebug operator<<(QDebug debug, const QZeroConfService &service);
+
 Q_DECLARE_METATYPE(QZeroConfService)
 
 #endif // QZEROCONFSERVICE_H
