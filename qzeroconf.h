@@ -30,18 +30,8 @@
 #include <QObject>
 #include <QHostAddress>
 #include <QMap>
-#include <QtCore/QtGlobal>
+#include "qzeroconfglobal.h"
 #include "qzeroconfservice.h"
-
-#if (!defined(QT_STATIC) && !defined(QZEROCONF_STATIC))
-#	ifdef QT_BUILD_ZEROCONF_LIB
-#		define Q_ZEROCONF_EXPORT Q_DECL_EXPORT
-#	else
-#		define Q_ZEROCONF_EXPORT Q_DECL_IMPORT
-#	endif
-#else
-#	define Q_ZEROCONF_EXPORT
-#endif
 
 class QZeroConfPrivate;
 
