@@ -126,7 +126,7 @@ public:
 				return;
 
 			zcs = ref->pub->services[key];
-			ref->pub->services.remove(key);
+            ref->pub->services.remove(key);
 			emit ref->pub->serviceRemoved(zcs);
 			break;
 		case AVAHI_BROWSER_ALL_FOR_NOW:
@@ -176,7 +176,7 @@ public:
 						zcs.appendTxt(pair.at(0));
 					txt = txt->next;
 				}
-				ref->pub->services.insert(key, zcs);
+
 			}
 
 			char a[AVAHI_ADDRESS_STR_MAX];
@@ -191,6 +191,8 @@ public:
 				emit ref->pub->serviceAdded(zcs);
 			else
 				emit ref->pub->serviceUpdated(zcs);
+
+            ref->pub->services.insert(key, zcs);
 		}
 		else if (ref->pub->services.contains(key)) {	// delete service if exists and unable to resolve
 			zcs = ref->pub->services[key];

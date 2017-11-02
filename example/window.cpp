@@ -55,7 +55,8 @@ mainWindow::mainWindow()
 	buildGUI();
 
 	connect(&zeroConf, &QZeroConf::serviceAdded, this, &mainWindow::addService);
-	connect(&zeroConf, &QZeroConf::serviceRemoved, this, &mainWindow::removeService);
+    connect(&zeroConf, &QZeroConf::serviceUpdated, this, &mainWindow::updateService);
+    connect(&zeroConf, &QZeroConf::serviceRemoved, this, &mainWindow::removeService);
 	connect(qGuiApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(appStateChanged(Qt::ApplicationState)));
 
 	publishEnabled = 1;
@@ -163,6 +164,11 @@ void mainWindow::addService(QZeroConfService zcs)
 	#if !(defined(Q_OS_IOS) || defined(Q_OS_ANDROID))
 	setFixedSize(table.horizontalHeader()->length() + 60, table.verticalHeader()->length() + 100);
 	#endif
+}
+
+void mainWindow::updateService(QZeroConfService zcs)
+{
+    qDebug() << "Service updated: " << zcs;
 }
 
 void mainWindow::removeService(QZeroConfService zcs)
