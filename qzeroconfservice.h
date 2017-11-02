@@ -1,7 +1,7 @@
 #ifndef QZEROCONFSERVICE_H
 #define QZEROCONFSERVICE_H
 
-#include <QSharedDataPointer>
+#include <QExplicitlySharedDataPointer>
 #include <QHostAddress>
 #include "qzeroconfglobal.h"
 
@@ -47,7 +47,7 @@ public:
 	bool operator==(const QZeroConfService &rhs) const;
 
 private:
-	QSharedDataPointer<QZeroConfServiceData> data;
+	QExplicitlySharedDataPointer<QZeroConfServiceData> data;
 };
 
 Q_DECLARE_METATYPE(QZeroConfService)
