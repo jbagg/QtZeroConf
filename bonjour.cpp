@@ -262,6 +262,7 @@ void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
 	pri = new QZeroConfPrivate(this);
+	qRegisterMetaType<QZeroConfService>("QZeroConfService");
 }
 
 QZeroConf::~QZeroConf()
