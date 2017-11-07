@@ -68,7 +68,7 @@ void QZeroConfPrivate::resolve(void)
 {
 	DNSServiceErrorType err;
 
-	err = DNSServiceResolve(&resolver, kDNSServiceFlagsTimeout, newService.interfaceIndex(), newService.name().toUtf8(), newService.type().toUtf8(), newService.domain().toUtf8(), (DNSServiceResolveReply) resolverCallback, this);
+	err = DNSServiceResolve(&resolver, kDNSServiceFlagsTimeout, work.head().interfaceIndex(), work.head().name().toUtf8(), work.head().type().toUtf8(), work.head().domain().toUtf8(), (DNSServiceResolveReply) resolverCallback, this);
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(resolver);
 		if (sockfd == -1) {
@@ -114,12 +114,12 @@ void DNSSD_API QZeroConfPrivate::browseCallback(DNSServiceRef, DNSServiceFlags f
 				zcs.setType(type);
 				zcs.setDomain(domain);
 				zcs.setInterfaceIndex(interfaceIndex);
-				if (!ref->newService.isValid()) {
-					ref->newService = zcs;
+				if (!ref->work.size()) {
+					ref->work.enqueue(zcs);
 					ref->resolve();
 				}
 				else
-					ref->work.append(zcs);
+					ref->work.enqueue(zcs);
 			}
 		}
 		else if (ref->pub->services.contains(key)) {
@@ -154,15 +154,15 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 		QByteArray avahiText((const char *)txtRecord, recLen);
 		QList<QByteArray> pair = avahiText.split('=');
 		if (pair.size() == 2)
-			ref->newService.appendTxt(pair.at(0), pair.at(1));
+			ref->work.head().appendTxt(pair.at(0), pair.at(1));
 		else
-			ref->newService.appendTxt(pair.at(0));
+			ref->work.head().appendTxt(pair.at(0));
 
 		txtLen-= recLen + 1;
 		txtRecord+= recLen;
 	}
-	ref->newService.setHost(hostName);
-	ref->newService.setPort(qFromBigEndian<quint16>(port));
+	ref->work.head().setHost(hostName);
+	ref->work.head().setPort(qFromBigEndian<quint16>(port));
 	err = DNSServiceGetAddrInfo(&ref->resolver, kDNSServiceFlagsForceMulticast, interfaceIndex, ref->protocol, hostName, (DNSServiceGetAddrInfoReply) addressReply, ref);
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(ref->resolver);
@@ -195,23 +195,21 @@ void DNSSD_API QZeroConfPrivate::addressReply(DNSServiceRef sdRef,
 		if ((flags & kDNSServiceFlagsAdd) != 0) {
 			QHostAddress hAddress(address);
 			if (hAddress.protocol() == QAbstractSocket::IPv6Protocol)
-				ref->newService.setIpv6(hAddress);
+				ref->work.head().setIpv6(hAddress);
 			else
-				ref->newService.setIp(hAddress);
+				ref->work.head().setIp(hAddress);
 
-			QString key = ref->newService.name() + QString::number(interfaceIndex);
+			QString key = ref->work.head().name() + QString::number(interfaceIndex);
 			if (!ref->pub->services.contains(key)) {
-				ref->pub->services.insert(key, ref->newService);
-				emit ref->pub->serviceAdded(ref->newService);
+				ref->pub->services.insert(key, ref->work.head());
+				emit ref->pub->serviceAdded(ref->work.head());
 			}
 			else
-				emit ref->pub->serviceUpdated(ref->newService);
+				emit ref->pub->serviceUpdated(ref->work.head());
 
 		}
-		if (!(flags & kDNSServiceFlagsMoreComing)) {
-			ref->newService = QZeroConfService();		// newService resolve succeeded so don't let cleanUp delete it!
+		if (!(flags & kDNSServiceFlagsMoreComing))
 			ref->cleanUp(ref->resolver);
-		}
 	}
 	else
 		ref->cleanUp(ref->resolver);
@@ -230,11 +228,9 @@ void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 			delete resolverSocket;
 			resolverSocket = NULL;
 		}
-		if (work.size()) {
-			newService = work.first();
-			work.removeFirst();
+		work.dequeue();
+		if (work.size())
 			resolve();
-		}
 	}
 	else if (toClean == browser) {
 		browser = NULL;

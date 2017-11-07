@@ -31,7 +31,7 @@
 #include <QSocketNotifier>
 #include <QtEndian>
 #include <QHostAddress>
-#include <QList>
+#include <QQueue>
 #include "qzeroconf.h"
 #include <QDebug>
 
@@ -64,8 +64,7 @@ public:
 	DNSServiceRef dnssRef, browser, resolver;
 	DNSServiceProtocol protocol;
 	QSocketNotifier *bs, *browserSocket, *resolverSocket, *addressSocket;
-	QZeroConfService newService;
-	QList<QZeroConfService> work;
+	QQueue<QZeroConfService> work;
 	QByteArray txt;
 
 public slots:
