@@ -133,11 +133,6 @@ void QZeroConfService::appendTxt(QByteArray idx, QByteArray val)
 	data->txt[idx] = val;
 }
 
-bool QZeroConfService::isValid() const
-{
-	return (!data->name.isEmpty());
-}
-
 bool QZeroConfService::operator==(const QZeroConfService &rhs) const
 {
 	return this->name() == rhs.name() && (this->ip() == rhs.ip() || this->ipv6() == rhs.ipv6());

@@ -35,7 +35,6 @@ public:
 	quint16 port() const;
 	QMap <QByteArray, QByteArray> txt() const;
 
-	bool isValid() const;
 	bool operator==(const QZeroConfService &rhs) const;
 
 private:
