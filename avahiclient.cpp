@@ -55,8 +55,6 @@ public:
 
 	static void groupCallback(AvahiEntryGroup *g, AvahiEntryGroupState state, AVAHI_GCC_UNUSED void *userdata)
 	{
-		qint32 ret;
-
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 		switch (state) {
 			case AVAHI_ENTRY_GROUP_ESTABLISHED:
@@ -72,22 +70,7 @@ public:
 				ref->group = NULL;
 				emit ref->pub->error(QZeroConf::serviceRegistrationFailed);
 				break;
-			case AVAHI_ENTRY_GROUP_UNCOMMITED:
-				ret = avahi_entry_group_add_service_strlst(g, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), NULL, ref->port, ref->txt);
-				if (ret < 0) {
-					avahi_entry_group_free(g);
-					ref->group = NULL;
-					emit ref->pub->error(QZeroConf::serviceRegistrationFailed);
-					return;
-				}
-
-				ret = avahi_entry_group_commit(g);
-				if (ret < 0) {
-					avahi_entry_group_free(g);
-					ref->group = NULL;
-					emit ref->pub->error(QZeroConf::serviceRegistrationFailed);
-				}
-				break;
+			case AVAHI_ENTRY_GROUP_UNCOMMITED: break;
 			case AVAHI_ENTRY_GROUP_REGISTERING: break;
 		}
 	}
@@ -259,6 +242,26 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 	pri->port = port;
 
 	pri->group = avahi_entry_group_new(pri->client, QZeroConfPrivate::groupCallback, pri);
+
+	int ret = avahi_entry_group_add_service_strlst(pri->group,
+		AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE,
+		pri->name.toUtf8(), pri->type.toUtf8(), pri->domain.toUtf8(),
+		NULL, pri->port, pri->txt);
+
+	if (ret < 0) {
+		avahi_entry_group_free(pri->group);
+		pri->group = NULL;
+		emit error(QZeroConf::serviceRegistrationFailed);
+		return;
+	}
+
+	ret = avahi_entry_group_commit(pri->group);
+	if (ret < 0) {
+		pri->group = NULL;
+		avahi_entry_group_free(pri->group);
+		emit error(QZeroConf::serviceRegistrationFailed);
+	}
+
 	if (!pri->group)
 		emit error(QZeroConf::serviceRegistrationFailed);
 }
