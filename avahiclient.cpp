@@ -209,8 +209,6 @@ public:
 	AvahiServiceBrowser *browser;
 	QMap <QString, AvahiServiceResolver *> resolvers;
 	AvahiStringList *txt;
-	QString name, type, domain;
-	quint16 port;
 };
 
 
@@ -236,18 +234,9 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 		return;
 	}
 
-	pri->name = name;
-	pri->type = type;
-	pri->domain = domain;
-	pri->port = port;
-
 	pri->group = avahi_entry_group_new(pri->client, QZeroConfPrivate::groupCallback, pri);
 
-	int ret = avahi_entry_group_add_service_strlst(pri->group,
-		AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE,
-		pri->name.toUtf8(), pri->type.toUtf8(), pri->domain.toUtf8(),
-		NULL, pri->port, pri->txt);
-
+	int ret = avahi_entry_group_add_service_strlst(pri->group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, name, type, domain, NULL, port, pri->txt);
 	if (ret < 0) {
 		avahi_entry_group_free(pri->group);
 		pri->group = NULL;
