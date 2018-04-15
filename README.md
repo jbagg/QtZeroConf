@@ -84,9 +84,9 @@ QZeroConf zeroConf;
 ```
 It is recommend, but not required, that you connect a slot to QZeroConf's error() signal.
 
-3) Connect a slot to QZeroConf's serviceAdded() signal.  When serviceAdded() is emitted, it passes a pointer to the QZeroConfService recently discovered.
+3) Connect a slot to QZeroConf's serviceAdded() signal.  When serviceAdded() is emitted, it passes the QZeroConfService recently discovered.  QZeroConfServices are [shared objects](http://doc.qt.io/qt-5/implicit-sharing.html).  They are safe to use between threads.
 
-4) Optionally connect a slot to QZeroConf's serviceRemoved() signal to received status when the service is unpublished.   ServiceRemoved() passes a pointer to the service being removed.  **Do not make delayed connections with ServiceRemoved() signal.**
+4) Optionally connect a slot to QZeroConf's serviceRemoved() signal to received status when the service is unpublished.   ServiceRemoved() passes the QZeroConfService being removed.
 
 5) Call startBrowser() with the type of the service to browse for and optionally the protocol to use.
 
@@ -102,6 +102,10 @@ Only one browser can be in use per instance of QzeroConf.
 ```c++
 qDebug() << zcs->txt["Qt"];
 ```
+**QML**
+
+QZeroConf can be used in QML applications
+
 
 ### Build Dependencies
 

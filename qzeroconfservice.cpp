@@ -1,3 +1,4 @@
+#include <QMutexLocker>
 #include "qzeroconfservice.h"
 
 
@@ -13,6 +14,7 @@ public:
 	quint32			interfaceIndex;
 	quint16			port = 0;
 	QMap			<QByteArray, QByteArray> txt;
+	QMutex			lock;
 
 };
 
@@ -80,21 +82,25 @@ void QZeroConfService::setHost(const QString &host)
 
 QHostAddress QZeroConfService::ip() const
 {
+	QMutexLocker locker(&data->lock);
 	return data->ip;
 }
 
 void QZeroConfService::setIp(QHostAddress &ip)
 {
+	QMutexLocker locker(&data->lock);
 	data->ip = ip;
 }
 
 QHostAddress QZeroConfService::ipv6() const
 {
+	QMutexLocker locker(&data->lock);
 	return data->ipv6;
 }
 
 void QZeroConfService::setIpv6(const QHostAddress &ipv6)
 {
+	QMutexLocker locker(&data->lock);
 	data->ipv6 = ipv6;
 }
 
