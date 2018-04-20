@@ -1,7 +1,7 @@
 find_package(Qt5 COMPONENTS Core Network)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-add_library(QtZeroConf
+add_library(QtZeroConf SHARED
     qzeroconfservice.h
     qzeroconfglobal.h
     qzeroconfservice.cpp
@@ -36,7 +36,8 @@ if(WIN32)
         bonjour-sdk/dnssd_clientstub.c
         bonjour-sdk/dnssd_ipc.c
         )
-    target_link_libraries(QtZeroConf PUBLIC -lws2_32 -lwsock32)
+    find_library(legacy_stdio_definitions legacy_stdio_definitions)
+    target_link_libraries(QtZeroConf PUBLIC ws2_32 ${legacy_stdio_definitions})
     target_compile_definitions(QtZeroConf PRIVATE
         -DQT_BUILD_ZEROCONF_LIB
         -DWIN32
