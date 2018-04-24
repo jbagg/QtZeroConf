@@ -27,6 +27,9 @@ if(APPLE)
     target_link_libraries(QtZeroConf PUBLIC ${CoreServices})
 endif()
 
+target_include_directories(QtZeroConf PUBLIC "${CMAKE_CURRENT_LIST_DIR}")
+target_link_libraries(QtZeroConf PUBLIC Qt5::Core Qt5::Network)
+
 if(WIN32)
     target_sources(QtZeroConf PRIVATE
         qzeroconf.h
@@ -52,5 +55,61 @@ if(WIN32)
     target_include_directories(QtZeroConf PRIVATE "${CMAKE_CURRENT_LIST_DIR}/bonjour-sdk")
 endif()
 
-target_include_directories(QtZeroConf PUBLIC "${CMAKE_CURRENT_LIST_DIR}")
-target_link_libraries(QtZeroConf PUBLIC Qt5::Core Qt5::Network)
+
+if(ANDROID)
+     set(ACM "${CMAKE_CURRENT_LIST_DIR}/avahi-common")
+     set(ACR "${CMAKE_CURRENT_LIST_DIR}/avahi-core")
+     target_sources(QtZeroConf PRIVATE
+        qzeroconf.h
+        avahi-qt/qt-watch.h
+        avahi-qt/qt-watch_p.h
+        avahicore.cpp
+        avahi-qt/qt-watch.cpp
+        ${ACM}/address.c
+        ${ACM}/alternative.c
+        ${ACM}/domain.c
+        ${ACM}/error.c
+        ${ACM}/i18n.c
+        ${ACM}/malloc.c
+        ${ACM}/rlist.c
+        ${ACM}/simple-watch.c
+        ${ACM}/strlst.c
+        ${ACM}/thread-watch.c
+        ${ACM}/timeval.c
+        ${ACM}/utf8.c
+        ${ACR}/addr-util.c
+        ${ACR}/announce.c
+        ${ACR}/browse.c
+        ${ACR}/browse-dns-server.c
+        ${ACR}/browse-domain.c
+        ${ACR}/browse-service.c
+        ${ACR}/browse-service-type.c
+        ${ACR}/cache.c
+        ${ACR}/dns.c
+        ${ACR}/domain-util.c
+        ${ACR}/entry.c
+        ${ACR}/fdutil.c
+        ${ACR}/hashmap.c
+        ${ACR}/iface.c
+        ${ACR}/iface-linux.c
+        ${ACR}/log.c
+        ${ACR}/multicast-lookup.c
+        ${ACR}/netlink.c
+        ${ACR}/prioq.c
+        ${ACR}/probe-sched.c
+        ${ACR}/querier.c
+        ${ACR}/query-sched.c
+        ${ACR}/resolve-address.c
+        ${ACR}/resolve-host-name.c
+        ${ACR}/resolve-service.c
+        ${ACR}/response-sched.c
+        ${ACR}/rr.c
+        ${ACR}/rrlist.c
+        ${ACR}/server.c
+        ${ACR}/socket.c
+        ${ACR}/timeeventq.c
+        ${ACR}/util.c
+        ${ACR}/wide-area.c
+)
+    target_compile_definitions(QtZeroConf PRIVATE HAVE_STRLCPY GETTEXT_PACKAGE HAVE_NETLINK)
+endif()
