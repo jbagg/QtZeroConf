@@ -52,6 +52,7 @@ if(WIN32)
         -D_CRT_SECURE_NO_DEPRECATE
         -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
         -DNOT_HAVE_SA_LEN)
+    target_compile_definitions(QtZeroConf PUBLIC -DQZEROCONF_STATIC)
     target_include_directories(QtZeroConf PRIVATE "${CMAKE_CURRENT_LIST_DIR}/bonjour-sdk")
 endif()
 
