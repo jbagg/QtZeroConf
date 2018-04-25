@@ -42,7 +42,7 @@ if(WIN32)
     find_library(legacy_stdio_definitions legacy_stdio_definitions)
     target_link_libraries(QtZeroConf PUBLIC ws2_32 ${legacy_stdio_definitions})
     target_compile_definitions(QtZeroConf PRIVATE
-        -DQT_BUILD_ZEROCONF_LIB
+        -DQZEROCONF_STATIC
         -DWIN32
         -D_USRDLL
         -DMDNS_DEBUGMSGS=0
