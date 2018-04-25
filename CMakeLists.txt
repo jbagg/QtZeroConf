@@ -1,7 +1,7 @@
 find_package(Qt5 COMPONENTS Core Network)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-add_library(QtZeroConf SHARED
+add_library(QtZeroConf STATIC
     qzeroconfservice.h
     qzeroconfglobal.h
     qzeroconfservice.cpp
