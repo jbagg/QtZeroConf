@@ -55,9 +55,10 @@ public:
 		avahi_server_config_init(&config);
 		config.publish_workstation = 0;
 
-		if (!server) {
+		if (!referenceCount) {
 			server = avahi_server_new(poll, &config, serverCallback, this, &error);
 		}
+		referenceCount++;
 		if (!server) {
 			return;
 		}
@@ -259,6 +260,7 @@ public:
 	QZeroConf *pub;
 	const AvahiPoll *poll;
 	static AvahiServer *server;
+	static quint32 referenceCount;
 	AvahiServerConfig config;
 	AvahiSEntryGroup *group;
 	AvahiSServiceBrowser *browser;
@@ -270,6 +272,7 @@ public:
 };
 
 AvahiServer* QZeroConfPrivate::server = nullptr;
+quint32 QZeroConfPrivate::referenceCount = 0;
 
 QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
@@ -282,7 +285,8 @@ QZeroConf::~QZeroConf()
 	avahi_string_list_free(pri->txt);
 	pri->broswerCleanUp();
 	avahi_server_config_free(&pri->config);
-	if (pri->server)
+	pri->referenceCount--;
+	if (!pri->referenceCount)
 		avahi_server_free(pri->server);
 	delete pri;
 }
