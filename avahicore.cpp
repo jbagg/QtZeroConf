@@ -55,7 +55,9 @@ public:
 		avahi_server_config_init(&config);
 		config.publish_workstation = 0;
 
-		server = avahi_server_new(poll, &config, serverCallback, this, &error);
+		if (!server) {
+			server = avahi_server_new(poll, &config, serverCallback, this, &error);
+		}
 		if (!server) {
 			return;
 		}
@@ -256,7 +258,7 @@ public:
 
 	QZeroConf *pub;
 	const AvahiPoll *poll;
-	AvahiServer *server;
+	static AvahiServer *server;
 	AvahiServerConfig config;
 	AvahiSEntryGroup *group;
 	AvahiSServiceBrowser *browser;
@@ -267,6 +269,7 @@ public:
 	qint32 port;
 };
 
+AvahiServer* QZeroConfPrivate::server = nullptr;
 
 QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
