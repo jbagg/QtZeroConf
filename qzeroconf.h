@@ -50,7 +50,7 @@ public:
 	};
     QZeroConf(QObject *parent = Q_NULLPTR);
 	~QZeroConf();
-	void startServicePublish(const char *name, const char *type, const char *domain, quint16 port);
+    void startServicePublish(const char *name, const char *type, const char *domain, quint16 port, quint32 interfaceIndex = 0);
 	void stopServicePublish(void);
 	bool publishExists(void);
 	inline void startBrowser(QString type)
