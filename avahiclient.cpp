@@ -227,7 +227,7 @@ QZeroConf::~QZeroConf()
 	delete pri;
 }
 
-void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port)
+void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port, quint32 interfaceIndex)
 {
 	if (pri->group) {
 		emit error(QZeroConf::serviceRegistrationFailed);
@@ -236,7 +236,7 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 
 	pri->group = avahi_entry_group_new(pri->client, QZeroConfPrivate::groupCallback, pri);
 
-	int ret = avahi_entry_group_add_service_strlst(pri->group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, name, type, domain, NULL, port, pri->txt);
+    int ret = avahi_entry_group_add_service_strlst(pri->group, interfaceIndex, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, name, type, domain, NULL, port, pri->txt);
 	if (ret < 0) {
 		avahi_entry_group_free(pri->group);
 		pri->group = NULL;

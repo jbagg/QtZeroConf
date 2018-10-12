@@ -270,7 +270,7 @@ QZeroConf::~QZeroConf()
 	delete pri;
 }
 
-void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port)
+void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port, quint32 interfaceIndex)
 {
 	DNSServiceErrorType err;
 
@@ -279,7 +279,7 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 		return;
 	}
 
-	err = DNSServiceRegister(&pri->dnssRef, NULL, NULL,
+    err = DNSServiceRegister(&pri->dnssRef, NULL, interfaceIndex,
 			name,
 			type,
 			domain,
