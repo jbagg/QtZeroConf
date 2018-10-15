@@ -8,7 +8,7 @@ lessThan(QT_MAJOR_VERSION, 5) {
 }
 
 # below for >= Qt5
-linux:!android {
+linux:!android:!ubports {
 	HEADERS+= $$PWD/qzeroconf.h $$PWD/avahi-qt/qt-watch.h  $$PWD/avahi-qt/qt-watch_p.h
 	SOURCES+= $$PWD/avahiclient.cpp $$PWD/avahi-qt/qt-watch.cpp
 	LIBS+= -lavahi-client -lavahi-common
@@ -57,7 +57,7 @@ ios {
 	QMAKE_CXXFLAGS+= -I$$PWD
 }
 
-android {
+ubports|android: {
 	QMAKE_CXXFLAGS+= -I$$PWD
 	QMAKE_CFLAGS+= -I$$PWD
 	ACM = $$PWD/avahi-common
@@ -65,7 +65,12 @@ android {
 	HEADERS+= $$PWD/qzeroconf.h $$PWD/avahi-qt/qt-watch.h  $$PWD/avahi-qt/qt-watch_p.h
 	SOURCES+= $$PWD/avahicore.cpp $$PWD/avahi-qt/qt-watch.cpp
 	# avahi-common
-	DEFINES+= HAVE_STRLCPY GETTEXT_PACKAGE
+	android: {
+		DEFINES+= HAVE_STRLCPY GETTEXT_PACKAGE
+	}
+	ubports: {
+		DEFINES+= _GNU_SOURCE GETTEXT_PACKAGE
+	}
 	SOURCES+= $$ACM/address.c
 	SOURCES+= $$ACM/alternative.c
 	SOURCES+= $$ACM/domain.c
