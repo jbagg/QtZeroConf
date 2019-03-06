@@ -142,21 +142,22 @@ public:
 			if (ref->pub->services.contains(key))
 				zcs = ref->pub->services[key];
 			else {
+				zcs = QZeroConfService(new QZeroConfServiceData);
 				newRecord = 1;
-				zcs.setName(name);
-				zcs.setType(type);
-				zcs.setDomain(domain);
-				zcs.setHost(host_name);
-				zcs.setInterfaceIndex(interface);
-				zcs.setPort(port);
+				zcs->m_name = name;
+				zcs->m_type = type;
+				zcs->m_domain = domain;
+				zcs->m_host = host_name;
+				zcs->m_interfaceIndex = interface;
+				zcs->m_port = port;
 				while (txt)	// get txt records
 				{
 					QByteArray avahiText((const char *)txt->text, txt->size);
 					QList<QByteArray> pair = avahiText.split('=');
 					if (pair.size() == 2)
-						zcs.appendTxt(pair.at(0), pair.at(1));
+						zcs->m_txt[pair.at(0)] = pair.at(1);
 					else
-						zcs.appendTxt(pair.at(0));
+						zcs->m_txt[pair.at(0)] = "";
 					txt = txt->next;
 				}
 				ref->pub->services.insert(key, zcs);
@@ -166,9 +167,9 @@ public:
 			avahi_address_snprint(a, sizeof(a), address);
 			QHostAddress addr(a);
 			if (protocol == AVAHI_PROTO_INET6)
-				zcs.setIpv6(addr);
+				zcs->setIpv6(addr);
 			else if (protocol == AVAHI_PROTO_INET)
-				zcs.setIp(addr);
+				zcs->setIp(addr);
 
 			if (newRecord)
 				emit ref->pub->serviceAdded(zcs);

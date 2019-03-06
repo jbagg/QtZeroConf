@@ -155,9 +155,9 @@ void mainWindow::addService(QZeroConfService zcs)
 
 	row = table.rowCount();
 	table.insertRow(row);
-	cell = new QTableWidgetItem(zcs.name());
+	cell = new QTableWidgetItem(zcs->name());
 	table.setItem(row, 0, cell);
-	cell = new QTableWidgetItem(zcs.ip().toString());
+	cell = new QTableWidgetItem(zcs->ip().toString());
 	table.setItem(row, 1, cell);
 	table.resizeColumnsToContents();
 	#if !(defined(Q_OS_IOS) || defined(Q_OS_ANDROID))
@@ -171,12 +171,12 @@ void mainWindow::removeService(QZeroConfService zcs)
 	QTableWidgetItem *nameItem, *ipItem;
 	qDebug() << "Removed service: " << zcs;
 
-	QList <QTableWidgetItem*> search = table.findItems(zcs.name(), Qt::MatchExactly);
+	QList <QTableWidgetItem*> search = table.findItems(zcs->name(), Qt::MatchExactly);
 	for (i=0; i<search.size(); i++) {
 		nameItem = search.at(i);
 		row = nameItem->row();
 		ipItem = table.item(row, 1);
-		if (table.item(row, 1)->text() == zcs.ip().toString()) {		// match ip address in case of dual homed systems
+		if (table.item(row, 1)->text() == zcs->ip().toString()) {		// match ip address in case of dual homed systems
 			delete nameItem;
 			delete ipItem;
 			table.removeRow(row);

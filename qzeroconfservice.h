@@ -1,14 +1,14 @@
 #ifndef QZEROCONFSERVICE_H
 #define QZEROCONFSERVICE_H
 
-#include <QExplicitlySharedDataPointer>
 #include <QHostAddress>
+#include <QMutexLocker>
+#include <QSharedPointer>
 #include "qzeroconfglobal.h"
 
-class QZeroConfServiceData;
 class QZeroConfPrivate;
 
-class Q_ZEROCONF_EXPORT QZeroConfService
+class Q_ZEROCONF_EXPORT QZeroConfServiceData
 {
 	Q_GADGET
 	Q_PROPERTY( QString name READ name )
@@ -19,40 +19,51 @@ class Q_ZEROCONF_EXPORT QZeroConfService
 friend class QZeroConfPrivate;
 
 public:
-
-	QZeroConfService();
-	QZeroConfService(const QZeroConfService &);
-	QZeroConfService &operator=(const QZeroConfService &);
-	~QZeroConfService();
-
-	QString name() const;
-	QString type() const;
-	QString domain() const;
-	QString host() const;
-	QHostAddress ip() const;
-	QHostAddress ipv6() const;
-	quint32 interfaceIndex() const;
-	quint16 port() const;
-	QMap <QByteArray, QByteArray> txt() const;
-
-	bool operator==(const QZeroConfService &rhs) const;
+	inline QString name() const {return m_name;}
+	inline QString type() const {return m_type;}
+	inline QString domain() const {return m_domain;}
+	inline QString host() const {return m_host;}
+	QHostAddress ip()
+	{
+		QMutexLocker locker(&m_lock);
+		return m_ip;
+	}
+	QHostAddress ipv6()
+	{
+		QMutexLocker locker(&m_lock);
+		return m_ipv6;
+	}
+	inline quint32 interfaceIndex() const {return m_interfaceIndex;}
+	quint16 port() const {return m_port;}
+	QMap <QByteArray, QByteArray> txt() const {return m_txt;}
 
 private:
-	void setName(const QString &name);
-	void setType(const QString &type);
-	void setDomain(const QString &domain);
-	void setHost(const QString &host);
-	void setIp(QHostAddress &ip);
-	void setIpv6(const QHostAddress &ipv6);
-	void setInterfaceIndex(const quint32 &interfaceIndex);
-	void setPort(const quint16 port);
-	void setTxt(const QMap<QByteArray, QByteArray> txt);
-	void appendTxt(QByteArray idx, QByteArray val = "");
-	QExplicitlySharedDataPointer<QZeroConfServiceData> data;
+	void setIp(QHostAddress &ip)
+	{
+		QMutexLocker locker(&m_lock);
+		m_ip = ip;
+	}
+	void setIpv6(const QHostAddress &ipv6)
+	{
+		QMutexLocker locker(&m_lock);
+		m_ipv6 = ipv6;
+	}
+	QString			m_name;
+	QString			m_type;
+	QString			m_domain;
+	QString			m_host;
+	QHostAddress	m_ip;
+	QHostAddress	m_ipv6;
+	quint32			m_interfaceIndex;
+	quint16			m_port;
+	QMap			<QByteArray, QByteArray> m_txt;
+	QMutex			m_lock;
 };
 
-QDebug operator<<(QDebug debug, const QZeroConfService &service);
+typedef QSharedPointer<QZeroConfServiceData> QZeroConfService;
 
 Q_DECLARE_METATYPE(QZeroConfService)
+
+QDebug operator<<(QDebug debug, const QZeroConfService &service);
 
 #endif // QZEROCONFSERVICE_H
