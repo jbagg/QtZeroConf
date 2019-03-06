@@ -195,10 +195,7 @@ void DNSSD_API QZeroConfPrivate::addressReply(DNSServiceRef sdRef,
 	if (err == kDNSServiceErr_NoError) {
 		if ((flags & kDNSServiceFlagsAdd) != 0) {
 			QHostAddress hAddress(address);
-			if (hAddress.protocol() == QAbstractSocket::IPv6Protocol)
-				ref->work.head()->setIpv6(hAddress);
-			else
-				ref->work.head()->setIp(hAddress);
+			ref->work.head()->setIp(hAddress);
 
 			QString key = ref->work.head()->name() + QString::number(interfaceIndex);
 			if (!ref->pub->services.contains(key)) {
@@ -349,8 +346,10 @@ void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol
 	switch (protocol) {
 		case QAbstractSocket::IPv4Protocol: pri->protocol = kDNSServiceProtocol_IPv4; break;
 		case QAbstractSocket::IPv6Protocol: pri->protocol = kDNSServiceProtocol_IPv6; break;
-		case QAbstractSocket::AnyIPProtocol: pri->protocol = kDNSServiceProtocol_IPv4 | kDNSServiceProtocol_IPv6; break;
-		default: pri->protocol = kDNSServiceProtocol_IPv4; break;
+		default:
+			qDebug("QZeroConf::startBrowser() - unsupported protocol, using IPv4");
+			pri->protocol = kDNSServiceProtocol_IPv4;
+			break;
 	};
 
 	err = DNSServiceBrowse(&pri->browser, 0, 0, type.toUtf8(), 0, (DNSServiceBrowseReply) QZeroConfPrivate::browseCallback, pri);

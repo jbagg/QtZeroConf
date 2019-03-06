@@ -28,11 +28,6 @@ public:
 		QMutexLocker locker(&m_lock);
 		return m_ip;
 	}
-	QHostAddress ipv6()
-	{
-		QMutexLocker locker(&m_lock);
-		return m_ipv6;
-	}
 	inline quint32 interfaceIndex() const {return m_interfaceIndex;}
 	quint16 port() const {return m_port;}
 	QMap <QByteArray, QByteArray> txt() const {return m_txt;}
@@ -43,17 +38,11 @@ private:
 		QMutexLocker locker(&m_lock);
 		m_ip = ip;
 	}
-	void setIpv6(const QHostAddress &ipv6)
-	{
-		QMutexLocker locker(&m_lock);
-		m_ipv6 = ipv6;
-	}
 	QString			m_name;
 	QString			m_type;
 	QString			m_domain;
 	QString			m_host;
 	QHostAddress	m_ip;
-	QHostAddress	m_ipv6;
 	quint32			m_interfaceIndex;
 	quint16			m_port;
 	QMap			<QByteArray, QByteArray> m_txt;
