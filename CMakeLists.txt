@@ -39,8 +39,7 @@ if(WIN32)
         bonjour-sdk/dnssd_clientstub.c
         bonjour-sdk/dnssd_ipc.c
         )
-    find_library(legacy_stdio_definitions legacy_stdio_definitions)
-    target_link_libraries(QtZeroConf PUBLIC ws2_32 ${legacy_stdio_definitions})
+    target_link_libraries(QtZeroConf PUBLIC ws2_32 "legacy_stdio_definitions.lib")
     target_compile_definitions(QtZeroConf PRIVATE
         -DQZEROCONF_STATIC
         -DWIN32
