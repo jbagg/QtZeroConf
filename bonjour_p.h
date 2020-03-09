@@ -71,15 +71,17 @@ public:
 			const char *type, const char *domain, void *userdata);
 
 	static void DNSSD_API resolverCallback(DNSServiceRef, DNSServiceFlags, quint32, DNSServiceErrorType err, const char *,
-			const char *hostName, quint16 port, quint16 txtLen,	const char * txtRecord, void *userdata);
+			const char *hostName, quint16 port, quint16 txtLen,	const unsigned char *txtRecord, void *userdata);
 
 	static void DNSSD_API addressReply(DNSServiceRef sdRef,	DNSServiceFlags flags, quint32 interfaceIndex,
 			DNSServiceErrorType err, const char *hostName, const struct sockaddr* address, quint32 ttl, void *userdata);
 
 	QZeroConf *pub;
-	DNSServiceRef dnssRef, browser;
+	DNSServiceRef dnssRef = nullptr;
+	DNSServiceRef browser = nullptr;
 	DNSServiceProtocol protocol;
-	QSocketNotifier *bs, *browserSocket;
+	QSocketNotifier *bs = nullptr;
+	QSocketNotifier *browserSocket = nullptr;
 	QByteArray txt;
 	QHash<QString, Resolver*> resolvers;
 

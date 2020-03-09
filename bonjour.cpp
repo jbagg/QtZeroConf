@@ -55,10 +55,6 @@ void Resolver::cleanUp()
 QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 {
 	pub = parent;
-	dnssRef = NULL;
-	browser = NULL;
-	bs = NULL;
-	browserSocket = NULL;
 }
 
 void QZeroConfPrivate::bsRead()
@@ -88,7 +84,7 @@ void QZeroConfPrivate::resolve(QZeroConfService zcs)
 	resolver->ref = this;
 	resolver->zcs = zcs;
 
-	err = DNSServiceResolve(&resolver->DNSresolverRef, kDNSServiceFlagsTimeout, zcs->interfaceIndex(), zcs->name().toUtf8(), zcs->type().toUtf8(), zcs->domain().toUtf8(), (DNSServiceResolveReply) resolverCallback, resolver);
+	err = DNSServiceResolve(&resolver->DNSresolverRef, kDNSServiceFlagsTimeout, zcs->interfaceIndex(), zcs->name().toUtf8(), zcs->type().toUtf8(), zcs->domain().toUtf8(), static_cast<DNSServiceResolveReply>(resolverCallback), resolver);
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(resolver->DNSresolverRef);
 		if (sockfd == -1) {
@@ -155,7 +151,7 @@ void DNSSD_API QZeroConfPrivate::browseCallback(DNSServiceRef, DNSServiceFlags f
 void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags,
 		quint32 interfaceIndex, DNSServiceErrorType err, const char *,
 		const char *hostName, quint16 port, quint16 txtLen,
-		const char * txtRecord, void *userdata)
+		const unsigned char *txtRecord, void *userdata)
 {
 	Resolver *resolver = static_cast<Resolver *>(userdata);
 
@@ -169,7 +165,7 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 	{
 		recLen = txtRecord[0];
 		txtRecord++;
-		QByteArray avahiText((const char *)txtRecord, recLen);
+		QByteArray avahiText(reinterpret_cast<const char *>(txtRecord), recLen);
 		QList<QByteArray> pair = avahiText.split('=');
 		if (pair.size() == 2)
 			resolver->zcs->m_txt[pair.at(0)] = pair.at(1);
@@ -187,7 +183,7 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 		DNSServiceRefDeallocate(resolver->DNSaddressRef);
 		resolver->DNSaddressRef = nullptr;
 	}
-	err = DNSServiceGetAddrInfo(&resolver->DNSaddressRef, kDNSServiceFlagsForceMulticast, interfaceIndex, resolver->ref->protocol, hostName, (DNSServiceGetAddrInfoReply) addressReply, resolver);
+	err = DNSServiceGetAddrInfo(&resolver->DNSaddressRef, kDNSServiceFlagsForceMulticast, interfaceIndex, resolver->ref->protocol, hostName, static_cast<DNSServiceGetAddrInfoReply>(addressReply), resolver);
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(resolver->DNSaddressRef);
 		if (sockfd == -1) {
@@ -208,10 +204,10 @@ void DNSSD_API QZeroConfPrivate::addressReply(DNSServiceRef sdRef,
 		DNSServiceErrorType err, const char *hostName,
 		const struct sockaddr* address, quint32 ttl, void *userdata)
 {
-	Q_UNUSED(interfaceIndex);
-	Q_UNUSED(sdRef);
-	Q_UNUSED(ttl);
-	Q_UNUSED(hostName);
+	Q_UNUSED(interfaceIndex)
+	Q_UNUSED(sdRef)
+	Q_UNUSED(ttl)
+	Q_UNUSED(hostName)
 
 	Resolver *resolver = static_cast<Resolver *>(userdata);
 
@@ -239,10 +235,10 @@ void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 	if (!toClean)
 		return;
 	else if (toClean == browser) {
-		browser = NULL;
+		browser = nullptr;
 		if (browserSocket) {
 			delete browserSocket;
-			browserSocket = NULL;
+			browserSocket = nullptr;
 		}
 		QMap<QString, QZeroConfService >::iterator i;
 		for (i = pub->services.begin(); i != pub->services.end(); i++) {
@@ -253,10 +249,10 @@ void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 		pub->services.clear();
 	}
 	else if (toClean == dnssRef) {
-		dnssRef = NULL;
+		dnssRef = nullptr;
 		if (bs) {
 			delete bs;
-			bs = NULL;
+			bs = nullptr;
 		}
 	}
 
@@ -285,14 +281,14 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 		return;
 	}
 
-	err = DNSServiceRegister(&pri->dnssRef, NULL, NULL,
+	err = DNSServiceRegister(&pri->dnssRef, 0, 0,
 			name,
 			type,
 			domain,
-			NULL,
+			nullptr,
 			qFromBigEndian<quint16>(port),
-			pri->txt.size(), pri->txt.data(),
-			(DNSServiceRegisterReply) QZeroConfPrivate::registerCallback, pri);
+			static_cast<uint16_t>(pri->txt.size()), pri->txt.data(),
+			static_cast<DNSServiceRegisterReply>(QZeroConfPrivate::registerCallback), pri);
 
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(pri->dnssRef);
@@ -326,7 +322,7 @@ bool QZeroConf::publishExists(void)
 
 void QZeroConf::addServiceTxtRecord(QString nameOnly)
 {
-	pri->txt.append((quint8) nameOnly.size());
+	pri->txt.append(static_cast<char>(nameOnly.size()));
 	pri->txt.append(nameOnly.toUtf8());
 }
 
@@ -358,9 +354,9 @@ void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol
 			qDebug("QZeroConf::startBrowser() - unsupported protocol, using IPv4");
 			pri->protocol = kDNSServiceProtocol_IPv4;
 			break;
-	};
+	}
 
-	err = DNSServiceBrowse(&pri->browser, 0, 0, type.toUtf8(), 0, (DNSServiceBrowseReply) QZeroConfPrivate::browseCallback, pri);
+	err = DNSServiceBrowse(&pri->browser, 0, 0, type.toUtf8(), nullptr, static_cast<DNSServiceBrowseReply>(QZeroConfPrivate::browseCallback), pri);
 	if (err == kDNSServiceErr_NoError) {
 		int sockfd = DNSServiceRefSockFD(pri->browser);
 		if (sockfd == -1) {
