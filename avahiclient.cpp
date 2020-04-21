@@ -298,6 +298,7 @@ void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol
 	switch (protocol) {
 		case QAbstractSocket::IPv4Protocol: pri->aProtocol = AVAHI_PROTO_INET; break;
 		case QAbstractSocket::IPv6Protocol: pri->aProtocol = AVAHI_PROTO_INET6; break;
+		case QAbstractSocket::AnyIPProtocol: pri->aProtocol = AVAHI_PROTO_UNSPEC; break;
 		default:
 			qDebug("QZeroConf::startBrowser() - unsupported protocol, using IPv4");
 			pri->aProtocol = AVAHI_PROTO_INET;

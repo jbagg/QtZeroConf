@@ -350,6 +350,7 @@ void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol
 	switch (protocol) {
 		case QAbstractSocket::IPv4Protocol: pri->protocol = kDNSServiceProtocol_IPv4; break;
 		case QAbstractSocket::IPv6Protocol: pri->protocol = kDNSServiceProtocol_IPv6; break;
+		case QAbstractSocket::AnyIPProtocol: pri->protocol = kDNSServiceProtocol_IPv4 | kDNSServiceProtocol_IPv6; break;
 		default:
 			qDebug("QZeroConf::startBrowser() - unsupported protocol, using IPv4");
 			pri->protocol = kDNSServiceProtocol_IPv4;
