@@ -86,14 +86,7 @@ void QZeroConfPrivate::resolve(QZeroConfService zcs)
 
 	err = DNSServiceResolve(&resolver->DNSresolverRef, kDNSServiceFlagsTimeout, zcs->interfaceIndex(), zcs->name().toUtf8(), zcs->type().toUtf8(), zcs->domain().toUtf8(), static_cast<DNSServiceResolveReply>(resolverCallback), resolver);
 	if (err == kDNSServiceErr_NoError) {
-		int sockfd = DNSServiceRefSockFD(resolver->DNSresolverRef);
-		if (sockfd == -1) {
-			resolver->cleanUp();
-		}
-		else {
-			resolver->resolverNotifier = new QSocketNotifier(sockfd, QSocketNotifier::Read);
-			connect(resolver->resolverNotifier, &QSocketNotifier::activated, resolver, &Resolver::resolverReady);
-		}
+		resolver->resolverReady();
 	}
 	else {
 		resolver->cleanUp();
@@ -185,14 +178,7 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 	}
 	err = DNSServiceGetAddrInfo(&resolver->DNSaddressRef, kDNSServiceFlagsForceMulticast, interfaceIndex, resolver->ref->protocol, hostName, static_cast<DNSServiceGetAddrInfoReply>(addressReply), resolver);
 	if (err == kDNSServiceErr_NoError) {
-		int sockfd = DNSServiceRefSockFD(resolver->DNSaddressRef);
-		if (sockfd == -1) {
-			resolver->cleanUp();
-		}
-		else {
-			resolver->addressNotifier = new QSocketNotifier(sockfd, QSocketNotifier::Read);
-			connect(resolver->addressNotifier, &QSocketNotifier::activated, resolver, &Resolver::addressReady);
-		}
+		resolver->addressReady();
 	}
 	else {
 		resolver->cleanUp();
