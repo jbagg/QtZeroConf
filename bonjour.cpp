@@ -160,7 +160,7 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 		return;
 	}
 
-	qint16 recLen;
+	uchar recLen;
 	while (txtLen > 0)		// add txt records
 	{
 		recLen = txtRecord[0];
