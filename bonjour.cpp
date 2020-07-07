@@ -47,6 +47,8 @@ void Resolver::cleanUp()
 {
 	DNSServiceRefDeallocate(DNSresolverRef);
 	DNSServiceRefDeallocate(DNSaddressRef);
+	delete resolverNotifier;
+	delete addressNotifier;
 	QString key = zcs->name() + QString::number(zcs->interfaceIndex());
 	ref->resolvers.remove(key);
 	delete this;
