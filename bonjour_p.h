@@ -47,8 +47,8 @@ public:
 	QZeroConfPrivate *ref = nullptr;
 	DNSServiceRef DNSresolverRef = nullptr;
 	DNSServiceRef DNSaddressRef = nullptr;
-	QSocketNotifier *resolverNotifier = nullptr;
-	QSocketNotifier *addressNotifier = nullptr;
+	QSharedPointer <QSocketNotifier> resolverNotifier;
+	QSharedPointer <QSocketNotifier> addressNotifier;
 
 public slots:
 	void resolverReady();
@@ -80,8 +80,8 @@ public:
 	DNSServiceRef dnssRef = nullptr;
 	DNSServiceRef browser = nullptr;
 	DNSServiceProtocol protocol;
-	QSocketNotifier *bs = nullptr;
-	QSocketNotifier *browserSocket = nullptr;
+	QSharedPointer<QSocketNotifier> serviceNotifier;
+	QSharedPointer<QSocketNotifier> browserNotifier;
 	QByteArray txt;
 	QHash<QString, Resolver*> resolvers;
 
