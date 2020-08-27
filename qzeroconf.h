@@ -50,6 +50,8 @@ public:
 	};
     QZeroConf(QObject *parent = Q_NULLPTR);
 	~QZeroConf();
+	void setHostName(QString hostName);
+	QString hostName() const;
 	void startServicePublish(const char *name, const char *type, const char *domain, quint16 port);
 	void stopServicePublish(void);
 	bool publishExists(void);

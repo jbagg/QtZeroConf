@@ -290,6 +290,17 @@ QZeroConf::~QZeroConf()
 	delete pri;
 }
 
+void QZeroConf::setHostName(QString hostName)
+{
+	avahi_server_set_host_name(pri->server, hostName.toLatin1().constData());
+}
+
+QString QZeroConf::hostName() const
+{
+	QString name = QString::fromLatin1(avahi_server_get_host_name(pri->server));
+	return name;
+}
+
 void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port)
 {
 	if (pri->group) {
