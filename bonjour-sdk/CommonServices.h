@@ -743,7 +743,7 @@ typedef int ssize_t;
 //	 Standard Types
 //===========================================================================================================================
 
-#if ( !defined( __GNUC__ ) ) && ( !defined( INT8_MIN ) )
+#if ( !defined( INT8_MIN ) )
 
     #define INT8_MIN                    SCHAR_MIN
 
