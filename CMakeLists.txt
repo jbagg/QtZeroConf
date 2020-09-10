@@ -1,12 +1,22 @@
+project(QtZeroConf)
+
 find_package(Qt5 COMPONENTS Core Network)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-add_library(QtZeroConf STATIC
+
+add_library(QtZeroConf
     qzeroconfservice.h
     qzeroconfglobal.h
     qzeroconfservice.cpp
     qzeroconf.h
 )
+
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(QtZeroConf PRIVATE QT_BUILD_ZEROCONF_LIB)
+else()
+    target_compile_definitions(QtZeroConf PUBLIC QZEROCONF_STATIC)
+endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     target_sources(QtZeroConf PRIVATE
@@ -39,9 +49,11 @@ if(WIN32)
         bonjour-sdk/dnssd_clientstub.c
         bonjour-sdk/dnssd_ipc.c
         )
-    target_link_libraries(QtZeroConf PUBLIC ws2_32 "legacy_stdio_definitions.lib")
+    target_link_libraries(QtZeroConf PUBLIC ws2_32)
+    if(MSVC)
+        target_link_libraries(QtZeroConf PUBLIC "legacy_stdio_definitions.lib")
+    endif()
     target_compile_definitions(QtZeroConf PRIVATE
-        -DQZEROCONF_STATIC
         -DWIN32
         -D_USRDLL
         -DMDNS_DEBUGMSGS=0
@@ -51,7 +63,6 @@ if(WIN32)
         -D_CRT_SECURE_NO_DEPRECATE
         -D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1
         -DNOT_HAVE_SA_LEN)
-    target_compile_definitions(QtZeroConf PUBLIC -DQZEROCONF_STATIC)
     target_include_directories(QtZeroConf PRIVATE "${CMAKE_CURRENT_LIST_DIR}/bonjour-sdk")
 endif()
 
