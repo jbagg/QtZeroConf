@@ -31,7 +31,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     list(APPEND ${PUBLIC_HEADERS}
         avahi-qt/qt-watch.h
     )
-    target_link_libraries(QtZeroConf PRIVATE libavahi)
+    target_link_libraries(QtZeroConf PRIVATE avahi-client)
 endif()
 
 if(APPLE)
