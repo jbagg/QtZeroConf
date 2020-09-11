@@ -1,15 +1,19 @@
 project(QtZeroConf)
+cmake_minimum_required(VERSION 2.8.11)
 
 find_package(Qt5 COMPONENTS Core Network)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(QtZeroConf
+set(PUBLIC_HEADERS
     qzeroconfservice.h
     qzeroconfglobal.h
-    qzeroconfservice.cpp
     qzeroconf.h
+)
+add_library(QtZeroConf
+    ${PUBLIC_HEADERS}
+    qzeroconfservice.cpp
 )
 
 if(BUILD_SHARED_LIBS)
@@ -20,10 +24,12 @@ endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     target_sources(QtZeroConf PRIVATE
-        avahi-qt/qt-watch.h
         avahi-qt/qt-watch_p.h
         avahi-qt/qt-watch.cpp
         avahiclient.cpp
+    )
+    list(APPEND ${PUBLIC_HEADERS}
+        avahi-qt/qt-watch.h
     )
     target_link_libraries(QtZeroConf PRIVATE libavahi)
 endif()
@@ -37,18 +43,20 @@ if(APPLE)
     target_link_libraries(QtZeroConf PUBLIC ${CoreServices})
 endif()
 
-target_include_directories(QtZeroConf PUBLIC "${CMAKE_CURRENT_LIST_DIR}")
+target_include_directories(QtZeroConf PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
 target_link_libraries(QtZeroConf PUBLIC Qt5::Core Qt5::Network)
 
 if(WIN32)
     target_sources(QtZeroConf PRIVATE
-        qzeroconf.h
         bonjour_p.h
         bonjour.cpp
         bonjour-sdk/dnssd_clientlib.c
         bonjour-sdk/dnssd_clientstub.c
         bonjour-sdk/dnssd_ipc.c
-        )
+    )
     target_link_libraries(QtZeroConf PUBLIC ws2_32)
     if(MSVC)
         target_link_libraries(QtZeroConf PUBLIC "legacy_stdio_definitions.lib")
@@ -121,6 +129,18 @@ if(ANDROID)
         ${ACR}/timeeventq.c
         ${ACR}/util.c
         ${ACR}/wide-area.c
-)
+    )
+    list(APPEND ${PUBLIC_HEADERS}
+        avahi-qt/qt-watch.h
+    )
     target_compile_definitions(QtZeroConf PRIVATE HAVE_STRLCPY GETTEXT_PACKAGE HAVE_NETLINK)
 endif()
+
+# install
+set_target_properties(QtZeroConf PROPERTIES PUBLIC_HEADER
+    "${PUBLIC_HEADERS}"
+)
+install(TARGETS QtZeroConf
+    LIBRARY DESTINATION lib
+    PUBLIC_HEADER DESTINATION include/QtZeroConf
+)
