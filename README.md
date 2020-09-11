@@ -34,6 +34,9 @@ QZeroConf can be built directly into your project if your project is [LGPL3](htt
 Use `BUILD_SHARED_LIBS` to control whether QZeroConf should be built as static (`-DBUILD_SHARED_LIBS=OFF`) or as shared (`-DBUILD_SHARED_LIBS=ON`) library.
 The default is `OFF`.
 
+You can also build the included example project by setting `BUILD_EXAMPLE` to `ON`.
+The default for this is `OFF`
+
 ### API
 
 #### Service Publishing

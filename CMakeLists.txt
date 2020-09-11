@@ -144,3 +144,7 @@ install(TARGETS QtZeroConf
     LIBRARY DESTINATION lib
     PUBLIC_HEADER DESTINATION include/QtZeroConf
 )
+
+if(BUILD_EXAMPLE)
+    add_subdirectory(example)
+endif()
