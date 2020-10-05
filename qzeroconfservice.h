@@ -53,6 +53,6 @@ typedef QSharedPointer<QZeroConfServiceData> QZeroConfService;
 
 Q_DECLARE_METATYPE(QZeroConfService)
 
-QDebug operator<<(QDebug debug, const QZeroConfService &service);
+QDebug Q_ZEROCONF_EXPORT operator<<(QDebug debug, const QZeroConfService &service);
 
 #endif // QZEROCONFSERVICE_H
