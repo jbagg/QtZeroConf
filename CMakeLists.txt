@@ -141,8 +141,15 @@ set_target_properties(QtZeroConf PROPERTIES PUBLIC_HEADER
     "${PUBLIC_HEADERS}"
 )
 install(TARGETS QtZeroConf
+    EXPORT QtZeroConfConfig
     LIBRARY DESTINATION lib
     PUBLIC_HEADER DESTINATION include/QtZeroConf
+)
+export(TARGETS QtZeroConf
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/QtZeroConfConfig.cmake
+)
+install(EXPORT QtZeroConfConfig
+    DESTINATION ${INSTALL_CMAKEDIR}
 )
 
 if(BUILD_EXAMPLE)
