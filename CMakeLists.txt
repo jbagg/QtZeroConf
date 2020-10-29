@@ -137,6 +137,7 @@ if(ANDROID)
 endif()
 
 # install
+set(INSTALL_CMAKEDIR "lib/cmake/${PROJECT_NAME}" CACHE STRING "Installation directory for cmake config files")
 set_target_properties(QtZeroConf PROPERTIES PUBLIC_HEADER
     "${PUBLIC_HEADERS}"
 )
