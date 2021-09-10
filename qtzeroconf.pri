@@ -57,7 +57,7 @@ ios {
 	QMAKE_CXXFLAGS+= -I$$PWD
 }
 
-ubports|android: {
+ubports: {
 	QMAKE_CXXFLAGS+= -I$$PWD
 	QMAKE_CFLAGS+= -I$$PWD
 	ACM = $$PWD/avahi-common
@@ -119,6 +119,13 @@ ubports|android: {
 	SOURCES+= $$ACR/util.c
 	SOURCES+= $$ACR/wide-area.c
 	#avahi-core/iface-none.c avahi-core/iface-pfroute.c avahi-core/avahi-reflector.c
+}
+
+android: {
+	QT += androidextras
+	HEADERS += $$PWD/qzeroconf.h $$PWD/androidnsd_p.h
+	SOURCES += $$PWD/androidnsd.cpp
+	DISTFILES += $$PWD/QZeroConfNsdManager.java
 }
 
 HEADERS+= $$PWD/qzeroconfservice.h $$PWD/qzeroconfglobal.h
