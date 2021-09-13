@@ -28,6 +28,7 @@
 package qtzeroconf;
 
 import java.util.Map;
+import java.util.ArrayList;
 
 import android.util.Log;
 
@@ -51,6 +52,10 @@ public class QZeroConfNsdManager {
 	private NsdManager.DiscoveryListener discoveryListener;
 	private NsdManager.RegistrationListener registrationListener;
 	private String registrationName; // The original service name that was given for registration, it might change on collisions
+
+	// There can only be one resolver at a time per application, we'll need to queue the resolving
+	static private ArrayList<NsdServiceInfo> resolverQueue = new ArrayList<NsdServiceInfo>();
+	static private NsdServiceInfo pendingResolve = null;
 
 	public QZeroConfNsdManager(int id, Context context) {
 		super();
@@ -103,7 +108,7 @@ public class QZeroConfNsdManager {
 
 			@Override
 			public void onServiceFound(NsdServiceInfo service) {
-				nsdManager.resolveService(service, initializeResolveListener());
+				enqueueResolver(service);
 			}
 
 			@Override
@@ -133,7 +138,12 @@ public class QZeroConfNsdManager {
 
 			@Override
 			public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
-				Log.d(TAG, "Resolving failed for: " + serviceInfo.getServiceName() + " " + serviceInfo.getServiceType() + ": " + errorCode);
+				Log.w(TAG, "Resolving failed for: " + serviceInfo.getServiceName() + " " + serviceInfo.getServiceType() + ": " + errorCode);
+				if (errorCode == NsdManager.FAILURE_ALREADY_ACTIVE) {
+					enqueueResolver(pendingResolve);
+				}
+				pendingResolve = null;
+				processResolverQueue();
 			}
 
 			@Override
@@ -146,6 +156,8 @@ public class QZeroConfNsdManager {
 					serviceInfo.getPort(),
 					serviceInfo.getAttributes()
 				);
+				pendingResolve = null;
+				processResolverQueue();
 			}
 		};
 	}
@@ -176,5 +188,22 @@ public class QZeroConfNsdManager {
 				QZeroConfNsdManager.onPublisherStateChangedJNI(id, false, true);
 			}
 		};
+	}
+
+	private void enqueueResolver(NsdServiceInfo serviceInfo) {
+		resolverQueue.add(serviceInfo);
+		processResolverQueue();
+	}
+
+	private void processResolverQueue() {
+		if (resolverQueue.isEmpty()) {
+			return;
+		}
+		if (pendingResolve != null) {
+			return;
+		}
+		pendingResolve = resolverQueue.get(0);
+		resolverQueue.remove(0);
+		nsdManager.resolveService(pendingResolve, initializeResolveListener());
 	}
 }
