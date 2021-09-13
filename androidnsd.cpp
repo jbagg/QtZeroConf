@@ -51,7 +51,7 @@ QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 
 	// Passing "this" as ID down to Java so we can access "this" in callbacks.
 	// There seems to be no straight forward way to match the "thiz" pointer from JNI calls to our pointer of the Java class
-	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(ILandroid/content/Context;)V", reinterpret_cast<int>(this), QtAndroid::androidActivity().object());
+	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(ILandroid/content/Context;)V", reinterpret_cast<intptr_t>(this), QtAndroid::androidActivity().object());
 	if (nsdManager.isValid()) {
 		jclass objectClass = env->GetObjectClass(nsdManager.object<jobject>());
 		env->RegisterNatives(objectClass, methods, sizeof(methods) / sizeof(methods[0]));
