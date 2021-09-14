@@ -42,11 +42,11 @@ public:
 	void stopServicePublish();
 	void startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol);
 	void stopBrowser();
-	static void onServiceResolvedJNI(JNIEnv */*env*/, jobject /*this*/, jint id, jstring name, jstring type, jstring hostname, jstring address, jint port, jobject txtRecords);
-	static void onServiceRemovedJNI(JNIEnv */*env*/, jobject /*this*/, jint id, jstring name);
-	static void onBrowserStateChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jint id, jboolean running, jboolean error);
-	static void onPublisherStateChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jint id, jboolean running, jboolean error);
-	static void onServiceNameChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jint id, jstring newName);
+	static void onServiceResolvedJNI(JNIEnv */*env*/, jobject /*thiz*/, jlong id, jstring name, jstring type, jstring hostname, jstring address, jint port, jobject txtRecords);
+	static void onServiceRemovedJNI(JNIEnv */*env*/, jobject /*this*/, jlong id, jstring name);
+	static void onBrowserStateChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jlong id, jboolean running, jboolean error);
+	static void onPublisherStateChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jlong id, jboolean running, jboolean error);
+	static void onServiceNameChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jlong id, jstring newName);
 
 	QZeroConf *pub;
 	QAndroidJniObject nsdManager;

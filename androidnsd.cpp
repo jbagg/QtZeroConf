@@ -42,16 +42,16 @@ QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 	QAndroidJniEnvironment env;
 
 	JNINativeMethod methods[] {
-		{ "onServiceResolvedJNI", "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/Map;)V", (void*)QZeroConfPrivate::onServiceResolvedJNI },
-		{ "onServiceRemovedJNI", "(ILjava/lang/String;)V", (void*)QZeroConfPrivate::onServiceRemovedJNI },
-		{ "onBrowserStateChangedJNI", "(IZZ)V", (void*)QZeroConfPrivate::onBrowserStateChangedJNI },
-		{ "onPublisherStateChangedJNI", "(IZZ)V", (void*)QZeroConfPrivate::onPublisherStateChangedJNI },
-		{ "onServiceNameChangedJNI", "(ILjava/lang/String;)V", (void*)QZeroConfPrivate::onServiceNameChangedJNI }
+		{ "onServiceResolvedJNI", "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/Map;)V", (void*)QZeroConfPrivate::onServiceResolvedJNI },
+		{ "onServiceRemovedJNI", "(JLjava/lang/String;)V", (void*)QZeroConfPrivate::onServiceRemovedJNI },
+		{ "onBrowserStateChangedJNI", "(JZZ)V", (void*)QZeroConfPrivate::onBrowserStateChangedJNI },
+		{ "onPublisherStateChangedJNI", "(JZZ)V", (void*)QZeroConfPrivate::onPublisherStateChangedJNI },
+		{ "onServiceNameChangedJNI", "(JLjava/lang/String;)V", (void*)QZeroConfPrivate::onServiceNameChangedJNI }
 	};
 
 	// Passing "this" as ID down to Java so we can access "this" in callbacks.
 	// There seems to be no straight forward way to match the "thiz" pointer from JNI calls to our pointer of the Java class
-	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(ILandroid/content/Context;)V", reinterpret_cast<intptr_t>(this), QtAndroid::androidActivity().object());
+	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(JLandroid/content/Context;)V", reinterpret_cast<uintptr_t>(this), QtAndroid::androidActivity().object());
 	if (nsdManager.isValid()) {
 		jclass objectClass = env->GetObjectClass(nsdManager.object<jobject>());
 		env->RegisterNatives(objectClass, methods, sizeof(methods) / sizeof(methods[0]));
@@ -120,7 +120,7 @@ void QZeroConfPrivate::stopBrowser()
 // Callbacks will come in from the android thread. So we're never accessing any of our members directly but instead
 // propagate callbacks through Qt::QueuedConnection invokes into the Qt thread. Be sure to check if the instance is still
 // alive by checking s_instances while holding the mutex before scheduling the invokation.
-void QZeroConfPrivate::onServiceResolvedJNI(JNIEnv */*env*/, jobject /*thiz*/, jint id, jstring name, jstring type, jstring hostname, jstring address, jint port, jobject txtRecords)
+void QZeroConfPrivate::onServiceResolvedJNI(JNIEnv */*env*/, jobject /*thiz*/, jlong id, jstring name, jstring type, jstring hostname, jstring address, jint port, jobject txtRecords)
 {
 	QMap<QByteArray, QByteArray> txtMap;
 	QAndroidJniObject txt(txtRecords);
@@ -157,7 +157,7 @@ void QZeroConfPrivate::onServiceResolvedJNI(JNIEnv */*env*/, jobject /*thiz*/, j
 
 }
 
-void QZeroConfPrivate::onServiceRemovedJNI(JNIEnv */*env*/, jobject /*this*/, jint id, jstring name)
+void QZeroConfPrivate::onServiceRemovedJNI(JNIEnv */*env*/, jobject /*this*/, jlong id, jstring name)
 {
 	QZeroConfPrivate *ref = reinterpret_cast<QZeroConfPrivate*>(id);
 	QMutexLocker locker(&s_instancesMutex);
@@ -168,7 +168,7 @@ void QZeroConfPrivate::onServiceRemovedJNI(JNIEnv */*env*/, jobject /*this*/, ji
 }
 
 
-void QZeroConfPrivate::onBrowserStateChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jint id, jboolean running, jboolean error)
+void QZeroConfPrivate::onBrowserStateChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jlong id, jboolean running, jboolean error)
 {
 	QZeroConfPrivate *ref = reinterpret_cast<QZeroConfPrivate*>(id);
 	QMutexLocker locker(&s_instancesMutex);
@@ -178,7 +178,7 @@ void QZeroConfPrivate::onBrowserStateChangedJNI(JNIEnv */*env*/, jobject /*thiz*
 	QMetaObject::invokeMethod(ref, "onBrowserStateChanged", Qt::QueuedConnection, Q_ARG(bool, running), Q_ARG(bool, error));
 }
 
-void QZeroConfPrivate::onPublisherStateChangedJNI(JNIEnv */*env*/, jobject /*this*/, jint id, jboolean running, jboolean error)
+void QZeroConfPrivate::onPublisherStateChangedJNI(JNIEnv */*env*/, jobject /*this*/, jlong id, jboolean running, jboolean error)
 {
 	QZeroConfPrivate *ref = reinterpret_cast<QZeroConfPrivate*>(id);
 	QMutexLocker locker(&s_instancesMutex);
@@ -188,7 +188,7 @@ void QZeroConfPrivate::onPublisherStateChangedJNI(JNIEnv */*env*/, jobject /*thi
 	QMetaObject::invokeMethod(ref, "onPublisherStateChanged", Qt::QueuedConnection, Q_ARG(bool, running), Q_ARG(bool, error));
 }
 
-void QZeroConfPrivate::onServiceNameChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jint id, jstring newName)
+void QZeroConfPrivate::onServiceNameChangedJNI(JNIEnv */*env*/, jobject /*thiz*/, jlong id, jstring newName)
 {
 	QZeroConfPrivate *ref = reinterpret_cast<QZeroConfPrivate*>(id);
 	QMutexLocker locker(&s_instancesMutex);

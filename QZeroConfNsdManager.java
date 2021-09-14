@@ -39,14 +39,14 @@ import android.net.nsd.NsdManager;
 
 public class QZeroConfNsdManager {
 
-	public static native void onServiceResolvedJNI(int id, String name, String type, String hostname, String address, int port, Map<String, byte[]> txtRecords);
-	public static native void onServiceRemovedJNI(int id, String name);
-	public static native void onBrowserStateChangedJNI(int id, boolean running, boolean error);
-	public static native void onPublisherStateChangedJNI(int id, boolean running, boolean error);
-	public static native void onServiceNameChangedJNI(int id, String newName);
+	public static native void onServiceResolvedJNI(long id, String name, String type, String hostname, String address, int port, Map<String, byte[]> txtRecords);
+	public static native void onServiceRemovedJNI(long id, String name);
+	public static native void onBrowserStateChangedJNI(long id, boolean running, boolean error);
+	public static native void onPublisherStateChangedJNI(long id, boolean running, boolean error);
+	public static native void onServiceNameChangedJNI(long id, String newName);
 
 	private static String TAG = "QZeroConfNsdManager";
-	private int id;
+	private long id;
 	private Context context;
 	private NsdManager nsdManager;
 	private NsdManager.DiscoveryListener discoveryListener;
@@ -57,7 +57,7 @@ public class QZeroConfNsdManager {
 	static private ArrayList<NsdServiceInfo> resolverQueue = new ArrayList<NsdServiceInfo>();
 	static private NsdServiceInfo pendingResolve = null;
 
-	public QZeroConfNsdManager(int id, Context context) {
+	public QZeroConfNsdManager(long id, Context context) {
 		super();
 		this.id = id;
 		this.context = context;
