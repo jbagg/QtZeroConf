@@ -127,3 +127,18 @@ Publishing GPL software in the App Store is a [violation of the GPL](https://new
 ### iOS device sleep
 
 When iOS puts the device to sleep, it breaks the DNS-SD browser and service publisher.  The only way around this is to call stopServicePublish() and stopBrowser() when the application state changes to Qt::ApplicationSuspended (sleep) and then call startPublish() and startBrowser() when the application state changes to Qt::ApplicationActive (wake).  See appStateChanged() in example.
+
+### iOS 14 and up
+
+iOS 14 and up requires apps to have permissions to access the local network.  See [this video](https://developer.apple.com/videos/play/wwdc2020/10110/) Two keys must be added to the info.plist....
+
+```xml
+1. <key>NSLocalNetworkUsageDescription</key>
+   <string>This app will need access to the local network for Discovery services.</string>
+2. <key>NSBonjourServices</key>
+       <array>
+           <string>_myservice1._tcp</string>
+           <string>_myservice2._tcp</string>
+       </array>
+```
+
