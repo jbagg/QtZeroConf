@@ -24,6 +24,7 @@
    NsdManager wrapper for use on Android devices
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
+#include <QGuiApplication>
 #include "androidnsd_p.h"
 
 Q_DECLARE_METATYPE(QHostAddress)
@@ -98,9 +99,16 @@ void QZeroConfPrivate::startServicePublish(const char *name, const char *type, q
 void QZeroConfPrivate::stopServicePublish()
 {
 	QAndroidJniObject ref(nsdManager);
-	QtAndroid::runOnAndroidThread([ref]() {
+	// If Android is on it's way to suspend when stopServicePublish() is called, we need to call nsd.unregisterService() synchronously
+	// to force it to run before the device goes to sleep.  If instead it is scheduled to run in the Android thread, it will not run
+	// until the device is woken back up.
+	if (qGuiApp->applicationState() == Qt::ApplicationSuspended) {
 		ref.callMethod<void>("unregisterService");
-	});
+	} else {
+		QtAndroid::runOnAndroidThread([ref]() {
+			ref.callMethod<void>("unregisterService");
+		});
+	}
 }
 
 void QZeroConfPrivate::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol)
