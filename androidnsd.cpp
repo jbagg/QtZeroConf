@@ -77,6 +77,8 @@ QZeroConfPrivate::~QZeroConfPrivate()
 void QZeroConfPrivate::startServicePublish(const char *name, const char *type, quint16 port)
 {
 	QAndroidJniObject ref(nsdManager);
+	publishName = name;
+	publishType = type;
 	QtAndroid::runOnAndroidThread([=](){
 		QAndroidJniObject txtMap("java/util/HashMap");
 		foreach (const QByteArray &key, txtRecords.keys()) {
@@ -86,8 +88,8 @@ void QZeroConfPrivate::startServicePublish(const char *name, const char *type, q
 		}
 
 		ref.callMethod<void>("registerService", "(Ljava/lang/String;Ljava/lang/String;ILjava/util/Map;)V",
-							 QAndroidJniObject::fromString(QString(name)).object<jstring>(),
-							 QAndroidJniObject::fromString(QString(type)).object<jstring>(),
+							 QAndroidJniObject::fromString(publishName).object<jstring>(),
+							 QAndroidJniObject::fromString(publishType).object<jstring>(),
 							 port,
 							 txtMap.object());
 	});

@@ -54,6 +54,8 @@ public:
 	bool browserExists = false;
 	bool publisherExists = false;
 	QMap<QByteArray, QByteArray> txtRecords;
+	QString publishName;
+	QString publishType;
 
 
 private slots:
