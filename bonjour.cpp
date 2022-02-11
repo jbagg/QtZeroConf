@@ -167,11 +167,11 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 		recLen = txtRecord[0];
 		txtRecord++;
 		QByteArray avahiText(reinterpret_cast<const char *>(txtRecord), recLen);
-		QList<QByteArray> pair = avahiText.split('=');
-		if (pair.size() == 2)
-			resolver->zcs->m_txt[pair.at(0)] = pair.at(1);
+		const size_t pos = avahiText.indexOf('=');
+		if (pos < 0)
+			resolver->zcs->m_txt[avahiText] = "";
 		else
-			resolver->zcs->m_txt[pair.at(0)] = "";
+			resolver->zcs->m_txt[avahiText.left(pos)] = avahiText.mid(pos + 1, -1);
 
 		txtLen-= recLen + 1;
 		txtRecord+= recLen;
