@@ -153,11 +153,11 @@ public:
 				while (txt)	// get txt records
 				{
 					QByteArray avahiText((const char *)txt->text, txt->size);
-					QList<QByteArray> pair = avahiText.split('=');
-					if (pair.size() == 2)
-						zcs->m_txt[pair.at(0)] = pair.at(1);
+					const ssize_t pos = avahiText.indexOf('=');
+					if (pos < 0)
+						zcs->m_txt[avahiText] = "";
 					else
-						zcs->m_txt[pair.at(0)] = "";
+						zcs->m_txt[avahiText.left(pos)] = avahiText.mid(pos + 1, -1);
 					txt = txt->next;
 				}
 				ref->pub->services.insert(key, zcs);
