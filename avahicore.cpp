@@ -38,29 +38,30 @@ class QZeroConfPrivate
 public:
 	QZeroConfPrivate(QZeroConf *parent)
 	{
-		qint32 error;
-
 		pub = parent;
 		group = NULL;
 		browser = NULL;
 		txt = NULL;
 		ready = 0;
 		registerWaiting = 0;
+	}
 
-		poll = avahi_qt_poll_get();
-		if (!poll) {
-			return;
-		}
+	void createOrDeleteServer()
+	{
+		qint32 error;
 
-		avahi_server_config_init(&config);
-		config.publish_workstation = 0;
-
-		if (!referenceCount) {
+		if (!serviceObjectCount && !browserObjectCount) {
+			avahi_server_free(server);
+			avahi_server_config_free(&config);
+			server = nullptr;
+		} else if (!server) {
+			poll = avahi_qt_poll_get();
+			if (!poll) {
+				return;
+			}
+			avahi_server_config_init(&config);
+			config.publish_workstation = 0;
 			server = avahi_server_new(poll, &config, serverCallback, this, &error);
-		}
-		referenceCount++;
-		if (!server) {
-			return;
 		}
 	}
 
@@ -228,6 +229,9 @@ public:
 		for (r = resolvers.begin(); r != resolvers.end(); r++)
 			avahi_s_service_resolver_free(*r);
 		resolvers.clear();
+
+		browserObjectCount--;
+		createOrDeleteServer();
 	}
 
 	void registerService(const char *name, const char *type, const char *domain, quint16 port)
@@ -258,8 +262,9 @@ public:
 	QZeroConf *pub;
 	const AvahiPoll *poll;
 	static AvahiServer *server;
-	static quint32 referenceCount;
-	AvahiServerConfig config;
+	static size_t serviceObjectCount;
+	static size_t browserObjectCount;
+	static AvahiServerConfig config;
 	AvahiSEntryGroup *group;
 	AvahiSServiceBrowser *browser;
 	AvahiProtocol aProtocol;
@@ -271,7 +276,9 @@ public:
 };
 
 AvahiServer* QZeroConfPrivate::server = nullptr;
-quint32 QZeroConfPrivate::referenceCount = 0;
+AvahiServerConfig QZeroConfPrivate::config;
+size_t QZeroConfPrivate::serviceObjectCount = 0;
+size_t QZeroConfPrivate::browserObjectCount = 0;
 
 QZeroConf::QZeroConf(QObject *parent) : QObject (parent)
 {
@@ -284,9 +291,7 @@ QZeroConf::~QZeroConf()
 	avahi_string_list_free(pri->txt);
 	pri->broswerCleanUp();
 	avahi_server_config_free(&pri->config);
-	pri->referenceCount--;
-	if (!pri->referenceCount)
-		avahi_server_free(pri->server);
+	stopServicePublish();
 	delete pri;
 }
 
@@ -296,6 +301,10 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 		emit error(QZeroConf::serviceRegistrationFailed);
 		return;
 	}
+
+	pri->serviceObjectCount++;
+	pri->createOrDeleteServer();
+
 	if (pri->ready)
 		pri->registerService(name, type, domain, port);
 	else {
@@ -312,6 +321,8 @@ void QZeroConf::stopServicePublish(void)
 	if (pri->group) {
 		avahi_s_entry_group_free(pri->group);
 		pri->group = NULL;
+		pri->serviceObjectCount--;
+		pri->createOrDeleteServer();
 	}
 }
 
@@ -347,6 +358,9 @@ void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol
 {
 	if (pri->browser)
 		emit error(QZeroConf::browserFailed);
+
+	pri->browserObjectCount++;
+	pri->createOrDeleteServer();
 
 	switch (protocol) {
 		case QAbstractSocket::IPv4Protocol: pri->aProtocol = AVAHI_PROTO_INET; break;

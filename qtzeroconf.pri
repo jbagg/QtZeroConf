@@ -69,7 +69,7 @@ ubports|android: {
 		DEFINES+= HAVE_STRLCPY GETTEXT_PACKAGE
 	}
 	ubports: {
-		DEFINES+= _GNU_SOURCE GETTEXT_PACKAGE
+		DEFINES+= _GNU_SOURCE GETTEXT_PACKAGE HAVE_NETLINK
 	}
 	SOURCES+= $$ACM/address.c
 	SOURCES+= $$ACM/alternative.c
@@ -84,7 +84,6 @@ ubports|android: {
 	SOURCES+= $$ACM/timeval.c
 	SOURCES+= $$ACM/utf8.c
 	# avahi-core
-	DEFINES+= HAVE_NETLINK
 	SOURCES+= $$ACR/addr-util.c
 	SOURCES+= $$ACR/announce.c
 	SOURCES+= $$ACR/browse.c
@@ -99,10 +98,15 @@ ubports|android: {
 	SOURCES+= $$ACR/fdutil.c
 	SOURCES+= $$ACR/hashmap.c
 	SOURCES+= $$ACR/iface.c
-	SOURCES+= $$ACR/iface-linux.c
+	android: {
+		SOURCES+= $$ACR/iface-android-api-30.c
+	}
+	ubports: {
+		SOURCES+= $$ACR/iface-linux.c
+		SOURCES+= $$ACR/netlink.c
+	}
 	SOURCES+= $$ACR/log.c
 	SOURCES+= $$ACR/multicast-lookup.c
-	SOURCES+= $$ACR/netlink.c
 	SOURCES+= $$ACR/prioq.c
 	SOURCES+= $$ACR/probe-sched.c
 	SOURCES+= $$ACR/querier.c
