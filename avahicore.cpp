@@ -36,15 +36,7 @@
 class QZeroConfPrivate
 {
 public:
-	QZeroConfPrivate(QZeroConf *parent)
-	{
-		pub = parent;
-		group = NULL;
-		browser = NULL;
-		txt = NULL;
-		ready = 0;
-		registerWaiting = 0;
-	}
+	QZeroConfPrivate(QZeroConf *parent) { pub = parent; }
 
 	void createOrDeleteServer()
 	{
@@ -70,10 +62,10 @@ public:
 		QZeroConfPrivate *ref = static_cast<QZeroConfPrivate *>(userdata);
 		switch (state) {
 			case AVAHI_SERVER_RUNNING:
-				ref->ready = 1;
-                if (ref->registerWaiting) {
-                    ref->registerWaiting = 0;
-                    ref->registerService(ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), ref->port);
+				ref->ready = true;
+				if (ref->registerWaiting) {
+					ref->registerWaiting = false;
+					ref->registerService(ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), ref->port);
 				}
 				break;
 			case AVAHI_SERVER_COLLISION:
@@ -265,12 +257,13 @@ public:
 	static size_t serviceObjectCount;
 	static size_t browserObjectCount;
 	static AvahiServerConfig config;
-	AvahiSEntryGroup *group;
-	AvahiSServiceBrowser *browser;
+	AvahiSEntryGroup *group = nullptr;
+	AvahiSServiceBrowser *browser = nullptr;
 	AvahiProtocol aProtocol;
 	QMap <QString, AvahiSServiceResolver *> resolvers;
-	AvahiStringList *txt;
-	bool ready, registerWaiting;
+	AvahiStringList *txt = nullptr;
+	bool ready = false;
+	bool registerWaiting = false;
 	QString name, type, domain;
 	qint32 port;
 };
@@ -308,7 +301,7 @@ void QZeroConf::startServicePublish(const char *name, const char *type, const ch
 	if (pri->ready)
 		pri->registerService(name, type, domain, port);
 	else {
-		pri->registerWaiting = 1;
+		pri->registerWaiting = true;
 		pri->name = name;
 		pri->type = type;
 		pri->domain = domain;
