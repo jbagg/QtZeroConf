@@ -183,7 +183,7 @@ public:
 				while (txt)	// get txt records
 				{
 					QByteArray avahiText((const char *)txt->text, txt->size);
-					const ssize_t pos = avahiText.indexOf('=');
+					const int pos = avahiText.indexOf('=');
 					if (pos < 0)
 						zcs->m_txt[avahiText] = "";
 					else
