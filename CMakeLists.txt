@@ -25,6 +25,7 @@ endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     find_library(avahi-client-lib avahi-client REQUIRED)
+    find_library(avahi-common-lib avahi-common REQUIRED)
     find_path(avahi-client-includes avahi-client/client.h REQUIRED)
     target_sources(QtZeroConf PRIVATE
         avahi-qt/qt-watch_p.h
@@ -35,7 +36,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     list(APPEND ${PUBLIC_HEADERS}
         avahi-qt/qt-watch.h
     )
-    target_link_libraries(QtZeroConf PRIVATE ${avahi-client-lib})
+    target_link_libraries(QtZeroConf PRIVATE ${avahi-client-lib} ${avahi-common-lib})
 endif()
 
 if(APPLE)
