@@ -1,7 +1,8 @@
 project(QtZeroConf)
 cmake_minimum_required(VERSION 2.8.11)
 
-find_package(Qt5 COMPONENTS Core Network)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Network)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -50,7 +51,7 @@ target_include_directories(QtZeroConf PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(QtZeroConf PUBLIC Qt5::Core Qt5::Network)
+target_link_libraries(QtZeroConf PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network)
 
 if(WIN32)
     target_sources(QtZeroConf PRIVATE

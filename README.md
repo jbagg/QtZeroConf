@@ -116,7 +116,7 @@ QZeroConf can be used in QML applications
 
 ### Build Dependencies
 
-Qt5
+Qt5 or Qt6
 
 On Linux, libavahi-client-dev and libavahi-common-dev
 

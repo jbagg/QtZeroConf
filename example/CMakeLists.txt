@@ -1,7 +1,7 @@
 project(QtZeroConfExample)
 cmake_minimum_required(VERSION 2.8.11)
 
-find_package(Qt5 COMPONENTS Gui Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui Widgets REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -21,5 +21,5 @@ add_executable(QtZeroConfExample
 
 target_link_libraries(QtZeroConfExample
     QtZeroConf
-    Qt5::Gui Qt5::Widgets
+    Qt${QT_VERISON_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets
 )
