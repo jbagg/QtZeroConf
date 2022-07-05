@@ -1,5 +1,5 @@
+cmake_minimum_required(VERSION 3.4)
 project(QtZeroConf VERSION 0.1.0)
-cmake_minimum_required(VERSION 2.8.11)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Network)
