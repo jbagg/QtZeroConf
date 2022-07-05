@@ -1,4 +1,4 @@
-project(QtZeroConf)
+project(QtZeroConf VERSION 0.1.0)
 cmake_minimum_required(VERSION 2.8.11)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Network)
@@ -19,6 +19,7 @@ add_library(QtZeroConf
 
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(QtZeroConf PRIVATE QT_BUILD_ZEROCONF_LIB)
+    set_target_properties(QtZeroConf PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 0)
 else()
     target_compile_definitions(QtZeroConf PUBLIC QZEROCONF_STATIC)
 endif()
