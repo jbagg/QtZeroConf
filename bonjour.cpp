@@ -190,6 +190,8 @@ void DNSSD_API QZeroConfPrivate::resolverCallback(DNSServiceRef, DNSServiceFlags
 			resolver->cleanUp();
 		}
 		else {
+			// Fix "multiple socket notifiers for same socket" warning
+			resolver->addressNotifier.clear();
 			resolver->addressNotifier = QSharedPointer<QSocketNotifier>::create(sockfd, QSocketNotifier::Read);
 			connect(resolver->addressNotifier.data(), &QSocketNotifier::activated, resolver, &Resolver::addressReady);
 		}
