@@ -72,7 +72,7 @@ public:
 				ref->ready = 1;
                 if (ref->registerWaiting) {
                     ref->registerWaiting = 0;
-                    ref->registerService(ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), ref->port);
+                    ref->registerService(ref->name.toUtf8(), ref->type.toUtf8(), ref->domain.toUtf8(), ref->port, 0);
 				}
 				break;
 			case AVAHI_SERVER_COLLISION:
@@ -230,7 +230,7 @@ public:
 		resolvers.clear();
 	}
 
-	void registerService(const char *name, const char *type, const char *domain, quint16 port)
+	void registerService(const char *name, const char *type, const char *domain, quint16 port, quint32 interface)
 	{
 		qint32 ret;
 		group = avahi_s_entry_group_new(server, QZeroConfPrivate::groupCallback, this);
@@ -239,7 +239,11 @@ public:
 			return;
 		}
 
-		ret = avahi_server_add_service_strlst(server, group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, name, type, domain, NULL, port, txt);
+		if (interface <= 0) {
+			interface = AVAHI_IF_UNSPEC;
+		}
+
+		ret = avahi_server_add_service_strlst(server, group, interface, AVAHI_PROTO_UNSPEC, AVAHI_PUBLISH_UPDATE, name, type, domain, NULL, port, txt);
 		if (ret < 0) {
 			avahi_s_entry_group_free(group);
 			group = NULL;
@@ -290,14 +294,14 @@ QZeroConf::~QZeroConf()
 	delete pri;
 }
 
-void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port)
+void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port, quint32 interface)
 {
 	if (pri->group) {
 		emit error(QZeroConf::serviceRegistrationFailed);
 		return;
 	}
 	if (pri->ready)
-		pri->registerService(name, type, domain, port);
+		pri->registerService(name, type, domain, port, interface);
 	else {
 		pri->registerWaiting = 1;
 		pri->name = name;
