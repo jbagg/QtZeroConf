@@ -24,16 +24,17 @@ else()
     target_compile_definitions(QtZeroConf PUBLIC QZEROCONF_STATIC)
 endif()
 
-if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
     find_library(avahi-client-lib avahi-client REQUIRED)
     find_library(avahi-common-lib avahi-common REQUIRED)
     find_path(avahi-client-includes avahi-client/client.h REQUIRED)
+    find_path(avahi-common-includes avahi-common/defs.h REQUIRED)
     target_sources(QtZeroConf PRIVATE
         avahi-qt/qt-watch_p.h
         avahi-qt/qt-watch.cpp
         avahiclient.cpp
     )
-    target_include_directories(QtZeroConf PRIVATE ${avahi-client-includes})
+    target_include_directories(QtZeroConf PRIVATE ${avahi-client-includes} ${avahi-common-includes})
     list(APPEND ${PUBLIC_HEADERS}
         avahi-qt/qt-watch.h
     )
