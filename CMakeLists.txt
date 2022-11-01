@@ -51,7 +51,7 @@ endif()
 
 target_include_directories(QtZeroConf PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:include/QtZeroConf>
 )
 target_link_libraries(QtZeroConf PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network)
 
