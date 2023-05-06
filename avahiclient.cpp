@@ -228,7 +228,7 @@ QZeroConf::~QZeroConf()
 
 void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port, quint32 interface)
 {
-	if (pri->group) {
+	if (!pri->client || pri->group) {  // check client is ok (avahi daemon is running) and group is not already configured
 		emit error(QZeroConf::serviceRegistrationFailed);
 		return;
 	}
@@ -295,8 +295,10 @@ void QZeroConf::clearServiceTxtRecords()
 
 void QZeroConf::startBrowser(QString type, QAbstractSocket::NetworkLayerProtocol protocol)
 {
-	if (pri->browser)
+	if (!pri->client || pri->browser) {  // check client is ok (avahi daemon is running) and browser is not already started
 		emit error(QZeroConf::browserFailed);
+		return;
+	}
 
 	switch (protocol) {
 		case QAbstractSocket::IPv4Protocol: pri->aProtocol = AVAHI_PROTO_INET; break;
