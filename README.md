@@ -7,7 +7,7 @@ QZeroConf is a Qt wrapper class for ZeroConf libraries across various platforms.
 * Android
 * iOS
 
-QZeroConf wraps avahi-client on Linux, avahi-core on Android, and dnssd on Mac, iOS and Windows.
+QZeroConf wraps avahi-client on Linux, Network Discovery Service (java) on Android, and dnssd on Mac, iOS and Windows.
 
 ### Building
 
@@ -36,6 +36,15 @@ The default is `OFF`.
 
 You can also build the included example project by setting `BUILD_EXAMPLE` to `ON`.
 The default for this is `OFF`
+
+#### Android
+
+Prior to Android api 30, QtZeroConf used AvaliCore.  AvaliCore no longer works >= api 30 as bind() to netlink sockets was disabled in Android.  QtZeroConf now uses the Android java Network Discovery Services.  NDS is slightly buggy, but more or less gets the job done.  A common issue with NDS is that if the app is in sleep mode and a service is removed on another device, the app does not get notified the service was removed when it wakes back up.  ANDROID_PACKAGE_SOURCE_DIR must be added to your app's .pro file.
+
+```
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+```
+QZeroConfNsdManager.java must then be copied or linked to $$PWD/android/src/QZeroConfNsdManager.java  Notice the extra src/   ...gradle expects this.
 
 ### API
 
