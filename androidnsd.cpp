@@ -286,9 +286,10 @@ QZeroConf::~QZeroConf()
 	delete pri;
 }
 
-void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port)
+void QZeroConf::startServicePublish(const char *name, const char *type, const char *domain, quint16 port, quint32 interface)
 {
 	Q_UNUSED(domain) // Not supported on Android API
+	Q_UNUSED(interface) // Not supported on Android API
 	pri->startServicePublish(name, type, port);
 }
 
