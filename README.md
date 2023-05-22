@@ -120,9 +120,22 @@ Qt5 or Qt6
 
 On Linux, libavahi-client-dev and libavahi-common-dev
 
+### Distribution Requirements
+
+
+Distributing Software / Apps that use QtZeroConf must follow the requirements of the LGPLv3.  Some of my interpretations of the LGPLv3
+
+
+* LGPLv3 text or a link to the LGPLv3 text must be distributed with the binary.  My preferred way to do this is in the App's "About" section.
+* An offer of source code with a link to QtZeroConf must be distributed with the binary.  My preferred way to do this is in the App's "About" section
+* For Android and iOS apps only, instructions on how to re-link or re-package the App or a link to instructions must be distributed with the binary.  My preferred way to do this is in the App's "About" section.
+
+
+All of the above must be shown to the user at least once, separate from the EULA, with a method for the user to acknowledge they have seen it (an ok button).  Ideally all of the above is also listed in the description of the App on the App Store.
+
 ### Apple App Store deployment
 
-Publishing GPL software in the App Store is a [violation of the GPL](https://news.ycombinator.com/item?id=3488833).  If you need to publish an app in the Apple App Store that uses QZeroConf, please contact me for a copy of QZeroConf with a BSD licence.
+Publishing closed source Apps that use a LGPLv3 library in the Apple App Store must provide a method for the end user to 1. update the library in the app and 2. run the new version of the app with the updated library.  Qt on iOS further complicates this by using static linking.  Closed source Apps on iOS using QtZeroConf must provide the apps object files along with clear step by step instructions on how to re-link the app with a new / different version of QtZeroConf (obligation 1).  iOS end uses can run the re-linked App on their device by creating a free iOS developer account and use the time limited signing on that account for their device.  (obligation 2)  I consider this an poor way to meet obligation 2, but as long as Apple has this mechanism, obligation 2 is meet.  I will not pursue copyright infringement as long as the individual / organization is meeting obligation 1 and 2 and the Distribution Requirements above.
 
 ### iOS device sleep
 
