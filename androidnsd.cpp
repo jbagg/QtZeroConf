@@ -123,9 +123,15 @@ void QZeroConfPrivate::startBrowser(QString type, QAbstractSocket::NetworkLayerP
 void QZeroConfPrivate::stopBrowser()
 {
 	QAndroidJniObject ref(nsdManager);
-	QtAndroid::runOnAndroidThread([ref]() {
+	// If Android is on it's way to suspend when stopBrowser() is called, we need to call nsd.stopServiceDiscovery() synchronously
+	// to force it to run before the device goes to sleep.
+	if (qGuiApp->applicationState() == Qt::ApplicationSuspended) {
 		ref.callMethod<void>("stopServiceDiscovery");
-	});
+	} else {
+		QtAndroid::runOnAndroidThread([ref]() {
+			ref.callMethod<void>("stopServiceDiscovery");
+		});
+	}
 }
 
 // Callbacks will come in from the android thread. So we're never accessing any of our members directly but instead
