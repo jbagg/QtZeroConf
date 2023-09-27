@@ -17,6 +17,8 @@ add_library(QtZeroConf
     qzeroconfservice.cpp
 )
 
+include(GNUInstallDirs)
+
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(QtZeroConf PRIVATE QT_BUILD_ZEROCONF_LIB)
     set_target_properties(QtZeroConf PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 0)
@@ -144,14 +146,14 @@ if(ANDROID)
 endif()
 
 # install
-set(INSTALL_CMAKEDIR "lib/cmake/${PROJECT_NAME}" CACHE STRING "Installation directory for cmake config files")
+set(INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE STRING "Installation directory for cmake config files")
 set_target_properties(QtZeroConf PROPERTIES PUBLIC_HEADER
     "${PUBLIC_HEADERS}"
 )
 install(TARGETS QtZeroConf
     EXPORT QtZeroConfConfig
-    LIBRARY DESTINATION lib
-    PUBLIC_HEADER DESTINATION include/QtZeroConf
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
 export(TARGETS QtZeroConf
     FILE ${CMAKE_CURRENT_BINARY_DIR}/QtZeroConfConfig.cmake
