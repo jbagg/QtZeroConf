@@ -83,8 +83,7 @@ if(WIN32)
     target_include_directories(QtZeroConf PRIVATE "${CMAKE_CURRENT_LIST_DIR}/bonjour-sdk")
 endif()
 
-
-if(ANDROID)
+if(ANDROID_AVAHI)
      set(ACM "${CMAKE_CURRENT_LIST_DIR}/avahi-common")
      set(ACR "${CMAKE_CURRENT_LIST_DIR}/avahi-core")
      target_sources(QtZeroConf PRIVATE
@@ -143,6 +142,14 @@ if(ANDROID)
         avahi-qt/qt-watch.h
     )
     target_compile_definitions(QtZeroConf PRIVATE HAVE_STRLCPY GETTEXT_PACKAGE HAVE_NETLINK)
+elseif(ANDROID)
+    target_sources(QtZeroConf PRIVATE
+        qzeroconf.h
+        androidnsd_p.h
+        androidnsd.cpp
+    )
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)
+    target_link_libraries(QtZeroConf PUBLIC Qt${QT_VERSION_MAJOR}::Gui)
 endif()
 
 # install
