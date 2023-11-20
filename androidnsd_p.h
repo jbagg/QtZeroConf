@@ -25,10 +25,16 @@
 ---------------------------------------------------------------------------------------------------
 **************************************************************************************************/
 #include "qzeroconf.h"
+#include <QMap>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QtAndroid>
 #include <QtAndroidExtras>
 #include <QAndroidJniObject>
+#else
+#include <QJniObject>
+using QAndroidJniObject = QJniObject;
+#endif
 
 class QZeroConfPrivate: QObject
 {

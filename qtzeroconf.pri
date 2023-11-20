@@ -122,7 +122,10 @@ ubports: {
 }
 
 android: {
-	QT += androidextras
+	lessThan(QT_MAJOR_VERSION, 6) {
+		QT += androidextras
+	}
+	QT += gui
 	HEADERS += $$PWD/qzeroconf.h $$PWD/androidnsd_p.h
 	SOURCES += $$PWD/androidnsd.cpp
 	DISTFILES += $$PWD/QZeroConfNsdManager.java
