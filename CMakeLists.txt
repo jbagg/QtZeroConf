@@ -150,6 +150,10 @@ elseif(ANDROID)
     )
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)
     target_link_libraries(QtZeroConf PUBLIC Qt${QT_VERSION_MAJOR}::Gui)
+    if (QT_VERSION_MAJOR EQUAL 5)
+        find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS AndroidExtras)
+        target_link_libraries(QtZeroConf PUBLIC Qt${QT_VERSION_MAJOR}::AndroidExtras)
+    endif ()
 endif()
 
 # install
