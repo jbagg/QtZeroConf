@@ -80,14 +80,24 @@ void mainWindow::buildGUI()
 	connect(button, &QPushButton::clicked, this, &mainWindow::stopPublishClicked);
 
 	table.verticalHeader()->hide();
-	table.horizontalHeader()->hide();
+	// table.horizontalHeader()->hide();
 	table.setColumnCount(2);
-	layout->addWidget(&table);
 	//table.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+	// set up the table
+	table.setHorizontalHeaderLabels(QStringList() << "Name"
+	                                              << "IP Address");
+	table.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	table.horizontalHeader()->setStretchLastSection(true);
+	table.setEditTriggers(QAbstractItemView::NoEditTriggers);
+	table.setSelectionBehavior(QAbstractItemView::SelectRows);
+	table.setSelectionMode(QAbstractItemView::SingleSelection);
+	layout->addWidget(&table);
 
 	QWidget *widget = new QWidget;
 	widget->setLayout(layout);
 	setCentralWidget(widget);
+
 	show();
 }
 
@@ -160,9 +170,10 @@ void mainWindow::addService(QZeroConfService zcs)
 	cell = new QTableWidgetItem(zcs->ip().toString());
 	table.setItem(row, 1, cell);
 	table.resizeColumnsToContents();
-	#if !(defined(Q_OS_IOS) || defined(Q_OS_ANDROID))
-	setFixedSize(table.horizontalHeader()->length() + 60, table.verticalHeader()->length() + 100);
-	#endif
+
+#if !(defined(Q_OS_IOS) || defined(Q_OS_ANDROID))
+	setFixedSize(table.horizontalHeader()->length() + 200, table.verticalHeader()->length() + 100);
+#endif
 }
 
 void mainWindow::removeService(QZeroConfService zcs)
