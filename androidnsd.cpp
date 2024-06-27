@@ -60,7 +60,10 @@ QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(JLandroid/content/Context;)V", reinterpret_cast<quint64>(this), QtAndroid::androidActivity().object());
 #else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-pod-varargs"
 	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(JLandroid/content/Context;)V", reinterpret_cast<quint64>(this), QNativeInterface::QAndroidApplication::context());
+#pragma GCC diagnostic pop
 #endif
 	if (nsdManager.isValid()) {
 		jclass objectClass = env->GetObjectClass(nsdManager.object<jobject>());
