@@ -59,8 +59,11 @@ QZeroConfPrivate::QZeroConfPrivate(QZeroConf *parent)
 	// Note: needs to be quint64 as uintptr_t might be 32 or 64 bit depending on the system, while Java expects a jlong which is always 64 bit.
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(JLandroid/content/Context;)V", reinterpret_cast<quint64>(this), QtAndroid::androidActivity().object());
-#else
+#elif (QT_VERSION < QT_VERSION_CHECK(6, 7, 0))
 	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(JLandroid/content/Context;)V", reinterpret_cast<quint64>(this), QNativeInterface::QAndroidApplication::context());
+#else
+	// QNativeInterface does not provide source compatibility.   https://bugreports.qt.io/browse/QTBUG-123900    https://forum.qt.io/topic/157493/binary-and-source-compatibility-breakage-in-6-7
+	nsdManager = QAndroidJniObject("qtzeroconf/QZeroConfNsdManager", "(JLandroid/content/Context;)V", reinterpret_cast<quint64>(this), QNativeInterface::QAndroidApplication::context().object<jobject>());
 #endif
 	if (nsdManager.isValid()) {
 		jclass objectClass = env->GetObjectClass(nsdManager.object<jobject>());
