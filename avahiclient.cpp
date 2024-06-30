@@ -150,17 +150,21 @@ public:
 				zcs->m_host = host_name;
 				zcs->m_interfaceIndex = interface;
 				zcs->m_port = port;
-				while (txt)	// get txt records
-				{
-					QByteArray avahiText((const char *)txt->text, txt->size);
-					const ssize_t pos = avahiText.indexOf('=');
-					if (pos < 0)
-						zcs->m_txt[avahiText] = "";
-					else
-						zcs->m_txt[avahiText.left(pos)] = avahiText.mid(pos + 1, -1);
-					txt = txt->next;
-				}
+				
 				ref->pub->services.insert(key, zcs);
+			}
+
+			// Update TXT records anyway
+			zcs->m_txt.clear();
+			while (txt)
+			{
+				QByteArray avahiText((const char *)txt->text, txt->size);
+				const ssize_t pos = avahiText.indexOf('=');
+				if (pos < 0)
+					zcs->m_txt[avahiText] = "";
+				else
+					zcs->m_txt[avahiText.left(pos)] = avahiText.mid(pos + 1, -1);
+				txt = txt->next;
 			}
 
 			char a[AVAHI_ADDRESS_STR_MAX];
