@@ -126,6 +126,7 @@ android: {
 		QT += androidextras
 	}
 	QT += gui
+	INCLUDEPATH += $$PWD
 	HEADERS += $$PWD/qzeroconf.h $$PWD/androidnsd_p.h
 	SOURCES += $$PWD/androidnsd.cpp
 	DISTFILES += $$PWD/QZeroConfNsdManager.java
