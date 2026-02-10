@@ -234,19 +234,25 @@ void DNSSD_API QZeroConfPrivate::addressReply(DNSServiceRef sdRef,
 
 void QZeroConfPrivate::cleanUp(DNSServiceRef toClean)
 {
-	if (!toClean)
+    if (!toClean){
 		return;
-	else if (toClean == browser) {
+
+    }else if(toClean == browser){
 		browser = nullptr;
 		browserNotifier.clear();
-		for (auto resolver : resolvers)
-			resolver->cleanUp();
+
+        const QList<Resolver*> listResolvers = resolvers.values();
+        for(auto it = listResolvers.cbegin(); it != listResolvers.cend(); ++it){
+            (*it)->cleanUp();
+        }
 		resolvers.clear();
-		for (auto service : pub->services)
-			emit pub->serviceRemoved(service);
+
+        for(auto it = pub->services.cbegin(); it != pub->services.cend(); ++it){
+            emit pub->serviceRemoved(*it);
+        }
 		pub->services.clear();
-	}
-	else if (toClean == dnssRef) {
+
+    }else if(toClean == dnssRef){
 		dnssRef = nullptr;
 		serviceNotifier.clear();
 	}
